@@ -106,6 +106,7 @@
     </div>
     <nav class="nav" id="nav"></nav>
     <button class="reset-btn" onclick="App.resetAll()">↺ Reiniciar datos de ejemplo</button>
+    <button class="reset-btn" onclick="App.clearAll()">🗑 Borrar datos de ejemplo</button>
     <div class="storage-note">Los datos se guardan en el localStorage de este navegador. <br> Si abres el archivo en otro equipo o navegador, no se veran los mismos datos. <br> App desarrollada por Alejandro Chacón</div>
   </aside>
   <main class="main no-print" id="main"></main>
@@ -140,12 +141,18 @@ const ICONS = {
   out:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>',
   contact:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M5 16c.5-2 2-3 4-3s3.5 1 4 3"/><line x1="14" y1="8" x2="18" y2="8"/><line x1="14" y1="12" x2="18" y2="12"/></svg>',
   building:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="1"/><rect x="8" y="6" width="2" height="2"/><rect x="14" y="6" width="2" height="2"/><rect x="8" y="11" width="2" height="2"/><rect x="14" y="11" width="2" height="2"/><line x1="10" y1="22" x2="10" y2="18"/><line x1="14" y1="22" x2="14" y2="18"/></svg>',
+  bank:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="21" x2="21" y2="21"/><line x1="5" y1="21" x2="5" y2="10"/><line x1="9" y1="21" x2="9" y2="10"/><line x1="15" y1="21" x2="15" y2="10"/><line x1="19" y1="21" x2="19" y2="10"/><polygon points="12 2 21 8 3 8"/></svg>',
+  book:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><line x1="9" y1="7" x2="15" y2="7"/></svg>',
+  journal:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="17" y2="13"/><line x1="7" y1="17" x2="13" y2="17"/></svg>',
+  layers:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
 };
 
 const KEYS = {
   cxc:"contapyme_cxc", cxp:"contapyme_cxp", inv:"contapyme_inventario",
   pla:"contapyme_planillas_v2", pre:"contapyme_precios", dep:"contapyme_depreciacion",
   fac:"contapyme_facturas", cli:"contapyme_clientes", prov:"contapyme_proveedores",
+  cat:"contapyme_catalogo", ban:"contapyme_bancos", cfg:"contapyme_config_contable",
+  asi:"contapyme_asientos",
 };
 
 const DEFAULTS = {
@@ -182,22 +189,56 @@ const DEFAULTS = {
   },
   pre:{
     pctIndirectos:0.02, pctFijos:0.05, pctUtilidad:0.3,
-    productos:[
-      {id:uid(), nombre:"Atun", costoUnitario:1458},
-      {id:uid(), nombre:"Sardinas", costoUnitario:2500},
-      {id:uid(), nombre:"Salmon", costoUnitario:2778},
-    ],
   },
   dep:[
     {id:uid(), categoria:"Vehiculo", descripcion:"Vehiculo marca", fechaCompra:"2026-01-01", vidaUtilMeses:120, costoHistorico:7500000},
     {id:uid(), categoria:"Equipo de computo", descripcion:"Computadora 1", fechaCompra:"2026-01-01", vidaUtilMeses:60, costoHistorico:1250000},
   ],
   fac:[],
+  cat:[
+    {id:"1000", codigo:"1000", nombre:"Activo", tipo:"Activo", naturaleza:"Deudora", padreId:"", esDetalle:false},
+    {id:"1100", codigo:"1100", nombre:"Activo circulante", tipo:"Activo", naturaleza:"Deudora", padreId:"1000", esDetalle:false},
+    {id:"1101", codigo:"1101", nombre:"Caja", tipo:"Activo", naturaleza:"Deudora", padreId:"1100", esDetalle:true},
+    {id:"1102", codigo:"1102", nombre:"Bancos", tipo:"Activo", naturaleza:"Deudora", padreId:"1100", esDetalle:true},
+    {id:"1103", codigo:"1103", nombre:"Cuentas por cobrar", tipo:"Activo", naturaleza:"Deudora", padreId:"1100", esDetalle:true},
+    {id:"1104", codigo:"1104", nombre:"Inventario de mercaderias", tipo:"Activo", naturaleza:"Deudora", padreId:"1100", esDetalle:true},
+    {id:"1105", codigo:"1105", nombre:"IVA credito fiscal", tipo:"Activo", naturaleza:"Deudora", padreId:"1100", esDetalle:true},
+    {id:"1200", codigo:"1200", nombre:"Activo no circulante", tipo:"Activo", naturaleza:"Deudora", padreId:"1000", esDetalle:false},
+    {id:"1201", codigo:"1201", nombre:"Activo fijo", tipo:"Activo", naturaleza:"Deudora", padreId:"1200", esDetalle:true},
+    {id:"1202", codigo:"1202", nombre:"Depreciacion acumulada", tipo:"Activo", naturaleza:"Acreedora", padreId:"1200", esDetalle:true},
+    {id:"2000", codigo:"2000", nombre:"Pasivo", tipo:"Pasivo", naturaleza:"Acreedora", padreId:"", esDetalle:false},
+    {id:"2100", codigo:"2100", nombre:"Pasivo circulante", tipo:"Pasivo", naturaleza:"Acreedora", padreId:"2000", esDetalle:false},
+    {id:"2101", codigo:"2101", nombre:"Cuentas por pagar", tipo:"Pasivo", naturaleza:"Acreedora", padreId:"2100", esDetalle:true},
+    {id:"2102", codigo:"2102", nombre:"IVA por pagar", tipo:"Pasivo", naturaleza:"Acreedora", padreId:"2100", esDetalle:true},
+    {id:"2103", codigo:"2103", nombre:"Cargas sociales por pagar", tipo:"Pasivo", naturaleza:"Acreedora", padreId:"2100", esDetalle:true},
+    {id:"3000", codigo:"3000", nombre:"Patrimonio", tipo:"Patrimonio", naturaleza:"Acreedora", padreId:"", esDetalle:false},
+    {id:"3101", codigo:"3101", nombre:"Capital social", tipo:"Patrimonio", naturaleza:"Acreedora", padreId:"3000", esDetalle:true},
+    {id:"3102", codigo:"3102", nombre:"Utilidades acumuladas", tipo:"Patrimonio", naturaleza:"Acreedora", padreId:"3000", esDetalle:true},
+    {id:"4000", codigo:"4000", nombre:"Ingresos", tipo:"Ingreso", naturaleza:"Acreedora", padreId:"", esDetalle:false},
+    {id:"4101", codigo:"4101", nombre:"Ventas", tipo:"Ingreso", naturaleza:"Acreedora", padreId:"4000", esDetalle:true},
+    {id:"5000", codigo:"5000", nombre:"Costos", tipo:"Costo", naturaleza:"Deudora", padreId:"", esDetalle:false},
+    {id:"5101", codigo:"5101", nombre:"Costo de ventas", tipo:"Costo", naturaleza:"Deudora", padreId:"5000", esDetalle:true},
+    {id:"6000", codigo:"6000", nombre:"Gastos", tipo:"Gasto", naturaleza:"Deudora", padreId:"", esDetalle:false},
+    {id:"6101", codigo:"6101", nombre:"Gastos de planilla", tipo:"Gasto", naturaleza:"Deudora", padreId:"6000", esDetalle:true},
+    {id:"6102", codigo:"6102", nombre:"Gastos de operacion", tipo:"Gasto", naturaleza:"Deudora", padreId:"6000", esDetalle:true},
+    {id:"6103", codigo:"6103", nombre:"Gasto de depreciacion", tipo:"Gasto", naturaleza:"Deudora", padreId:"6000", esDetalle:true},
+  ],
+  ban:[
+    {id:uid(), nombre:"Caja general", tipo:"Efectivo", cuentaId:"1101", numeroCuenta:"", saldoInicial:0},
+    {id:uid(), nombre:"Cuenta corriente", tipo:"Banco", cuentaId:"1102", numeroCuenta:"", saldoInicial:0},
+  ],
+  cfg:{
+    cuentaCxCDefault:"1103", cuentaCxPDefault:"2101", cuentaInventarioDefault:"1104",
+    cuentaVentasDefault:"4101", cuentaCostoDefault:"5101",
+    cuentaIvaVentas:"2102", cuentaIvaCompras:"1105",
+  },
+  asi:[],
 };
 
 const TABS = [
   {id:"resumen", label:"Resumen", icon:"dashboard"},
   {id:"fac", label:"Facturas", icon:"receipt"},
+  {id:"ban", label:"Bancos", icon:"bank"},
   {id:"cli", label:"Clientes", icon:"contact"},
   {id:"cxc", label:"Cuentas por cobrar", icon:"users"},
   {id:"prov", label:"Proveedores", icon:"building"},
@@ -206,6 +247,9 @@ const TABS = [
   {id:"pla", label:"Planillas", icon:"wallet"},
   {id:"pre", label:"Precio de venta", icon:"tag"},
   {id:"dep", label:"Depreciacion", icon:"trend"},
+  {id:"cat", label:"Catalogo contable", icon:"book"},
+  {id:"asi", label:"Asientos", icon:"journal"},
+  {id:"may", label:"Mayor", icon:"layers"},
 ];
 
 // ---------------- estado + persistencia ----------------
@@ -238,6 +282,11 @@ const App = {
   facturaOk: "",
   cxcShowForm: false,
   cxpShowForm: false,
+  abonoTarget: null,
+  asientoFormOpen: false,
+  asientoEditId: null,
+  asientoLineIdx: 1,
+  mayorCuentaId: null,
 
   init(){ this.render(); },
 
@@ -247,6 +296,19 @@ const App = {
     if (!confirm("¿Restaurar los datos de ejemplo? Se perderan los cambios guardados.")) return;
     for (const key of Object.keys(KEYS)) localStorage.removeItem(KEYS[key]);
     this.state = loadAll();
+    this.render();
+  },
+
+  clearAll(){
+    if (!confirm("¿Borrar los datos de ejemplo? Se eliminaran clientes, proveedores, facturas, cuentas por cobrar/pagar, inventario, planillas, precios de venta, activos, bancos y asientos contables. El catalogo de cuentas y la configuracion contable se conservan tal como estan.")) return;
+    const vacio = {
+      cli: [], prov: [], cxc: [], cxp: [],
+      inv: {productos:[], movimientos:[]},
+      pla: {config: this.state.pla.config, empleados:[]},
+      pre: {pctIndirectos:this.state.pre.pctIndirectos, pctFijos:this.state.pre.pctFijos, pctUtilidad:this.state.pre.pctUtilidad},
+      dep: [], fac: [], ban: [], asi: [],
+    };
+    for (const key of Object.keys(vacio)) saveKey(key, vacio[key]);
     this.render();
   },
 
@@ -264,10 +326,15 @@ const App = {
     else if (this.tab==="cxp") main.innerHTML = renderCuentas(this.state.cxp, "proveedor", "cxp");
     else if (this.tab==="inv") main.innerHTML = renderInventario(this.state.inv);
     else if (this.tab==="pla") main.innerHTML = renderPlanillas(this.state.pla);
-    else if (this.tab==="pre") main.innerHTML = renderPrecios(this.state.pre);
+    else if (this.tab==="pre") main.innerHTML = renderPrecios(this.state);
     else if (this.tab==="dep") main.innerHTML = renderDepreciacion(this.state.dep);
+    else if (this.tab==="ban") main.innerHTML = renderBancos(this.state);
+    else if (this.tab==="cat") main.innerHTML = renderCatalogo(this.state);
+    else if (this.tab==="asi") main.innerHTML = renderAsientos(this.state);
+    else if (this.tab==="may") main.innerHTML = renderMayor(this.state);
 
     if (this.tab==="fac") wireFacturaLiveUpdates();
+    if (this.tab==="asi") onAsientoLineInput();
   },
 
   // ---- directorio de clientes / proveedores ----
@@ -304,6 +371,67 @@ const App = {
     saveKey(key, this.state[key].filter(e=>e.id!==id));
     this.render();
   },
+  setEntidadCuenta(kind, id, cuentaId){
+    const key = kind==="cliente" ? "cli" : "prov";
+    saveKey(key, this.state[key].map(e => e.id===id ? {...e, cuentaId} : e));
+  },
+
+  // ---- catalogo de cuentas ----
+  addCuentaCatalogo(){
+    const g = (id) => document.getElementById(id).value.trim();
+    const codigo = g("cat-codigo");
+    const nombre = g("cat-nombre");
+    const tipo = document.getElementById("cat-tipo").value;
+    const padreId = document.getElementById("cat-padre").value;
+    const esDetalle = document.getElementById("cat-detalle").checked;
+    if (!codigo || !nombre) { alert("Completa codigo y nombre de la cuenta."); return; }
+    if (this.state.cat.some(c=>c.codigo===codigo)) { alert("Ya existe una cuenta con ese codigo."); return; }
+    const naturaleza = (tipo==="Activo"||tipo==="Costo"||tipo==="Gasto") ? "Deudora" : "Acreedora";
+    saveKey("cat", [...this.state.cat, {id:uid(), codigo, nombre, tipo, naturaleza, padreId, esDetalle}]);
+    this.render();
+  },
+  removeCuentaCatalogo(id){
+    const enUso = this.state.cli.some(c=>c.cuentaId===id) || this.state.prov.some(p=>p.cuentaId===id)
+      || this.state.ban.some(b=>b.cuentaId===id)
+      || this.state.inv.productos.some(p=>p.cuentaInventarioId===id||p.cuentaVentaId===id||p.cuentaCostoId===id)
+      || Object.values(this.state.cfg).includes(id)
+      || this.state.cat.some(c=>c.padreId===id);
+    if (enUso && !confirm("Esta cuenta esta en uso (asignada a un banco, cliente, proveedor, producto, otra cuenta padre o en la configuracion contable). ¿Eliminarla de todas formas?")) return;
+    if (!enUso && !confirm("¿Eliminar esta cuenta del catalogo?")) return;
+    saveKey("cat", this.state.cat.filter(c=>c.id!==id));
+    this.render();
+  },
+
+  // ---- bancos ----
+  addBanco(){
+    const g = (id) => document.getElementById(id).value.trim();
+    const nombre = g("ban-nombre");
+    const tipo = document.getElementById("ban-tipo").value;
+    const cuentaId = document.getElementById("ban-cuenta").value;
+    const numeroCuenta = g("ban-numero");
+    const saldoInicial = Number(g("ban-saldo")) || 0;
+    if (!nombre || !cuentaId) { alert("Completa el nombre y selecciona una cuenta contable."); return; }
+    saveKey("ban", [...this.state.ban, {id:uid(), nombre, tipo, cuentaId, numeroCuenta, saldoInicial}]);
+    this.render();
+  },
+  removeBanco(id){
+    if (!confirm("¿Eliminar esta cuenta bancaria/caja?")) return;
+    saveKey("ban", this.state.ban.filter(b=>b.id!==id));
+    this.render();
+  },
+  setBancoCuenta(id, cuentaId){
+    saveKey("ban", this.state.ban.map(b => b.id===id ? {...b, cuentaId} : b));
+  },
+
+  // ---- config contable ----
+  setCfg(field, value){
+    saveKey("cfg", {...this.state.cfg, [field]: value});
+  },
+
+  // ---- vinculacion de cuentas en productos ----
+  setProductoCuenta(id, field, cuentaId){
+    saveKey("inv", {...this.state.inv, productos: this.state.inv.productos.map(p => p.id===id ? {...p, [field]: cuentaId} : p)});
+  },
 
   // ---- cuentas por cobrar / pagar ----
   toggleCuentaForm(key){
@@ -316,9 +444,10 @@ const App = {
     const entidad = resolveEntidad(key+"-ent", kind);
     const monto = Number(g(key+"-monto"));
     if (!entidad || !monto) { alert(`Selecciona o agrega un ${kind} y un monto valido.`); return; }
+    const cuentaId = entidad.cuentaId || (key==="cxc" ? this.state.cfg.cuentaCxCDefault : this.state.cfg.cuentaCxPDefault);
     const row = {
       id: uid(), nombre: entidad.nombre, identificacion: entidad.identificacion || "", fecha: g(key+"-fecha") || todayISO(),
-      plazoDias: Number(g(key+"-plazo")) || 0, factura: g(key+"-factura"), monto, abonado: 0,
+      plazoDias: Number(g(key+"-plazo")) || 0, factura: g(key+"-factura"), monto, abonado: 0, cuentaId,
     };
     saveKey(key, [...this.state[key], row]);
     if (key==="cxc") this.cxcShowForm=false; else this.cxpShowForm=false;
@@ -329,14 +458,49 @@ const App = {
     saveKey(key, this.state[key].filter(r => r.id !== id));
     this.render();
   },
-  abonarCuenta(key, id){
-    const val = Number(prompt("Monto del abono:", ""));
-    if (!val || val<=0) return;
-    saveKey(key, this.state[key].map(r => r.id===id ? {...r, abonado:(Number(r.abonado)||0)+val} : r));
+  toggleAbono(key, id){
+    if (this.abonoTarget && this.abonoTarget.key===key && this.abonoTarget.id===id) this.abonoTarget = null;
+    else this.abonoTarget = {key, id};
+    this.render();
+  },
+  cancelarAbono(){ this.abonoTarget = null; this.render(); },
+  confirmarAbono(){
+    const target = this.abonoTarget;
+    if (!target) return;
+    const {key, id} = target;
+    const monto = Number(document.getElementById("abono-monto").value);
+    const bancoId = document.getElementById("abono-banco").value;
+    if (!monto || monto<=0) { alert("Ingresa un monto valido."); return; }
+    if (!bancoId) { alert("Selecciona la cuenta de pago (banco, caja, tarjeta o SINPE)."); return; }
+    const banco = this.state.ban.find(b=>b.id===bancoId);
+    const row = this.state[key].find(r=>r.id===id);
+    if (!row || !banco) return;
+    saveKey(key, this.state[key].map(r => r.id===id ? {...r, abonado:(Number(r.abonado)||0)+monto} : r));
+    const cuentaEntidad = row.cuentaId || (key==="cxc" ? this.state.cfg.cuentaCxCDefault : this.state.cfg.cuentaCxPDefault);
+    const glosa = `Abono ${key==="cxc"?"recibido de":"pagado a"} ${row.nombre}${row.factura?` - ${row.factura}`:""} (${banco.nombre})`;
+    const detalle = key==="cxc"
+      ? [{cuentaId: banco.cuentaId, debe: monto, haber: 0}, {cuentaId: cuentaEntidad, debe: 0, haber: monto}]
+      : [{cuentaId: cuentaEntidad, debe: monto, haber: 0}, {cuentaId: banco.cuentaId, debe: 0, haber: monto}];
+    this.registrarAsiento({fecha: todayISO(), origen: key==="cxc"?"abono-cxc":"abono-cxp", referencia: row.factura||"", glosa, tipo:"automatico", detalle});
+    this.abonoTarget = null;
     this.render();
   },
 
   // ---- inventario ----
+  addProductoNuevo(){
+    const nombre = document.getElementById("invnew-nombre").value.trim();
+    const existencia = Number(document.getElementById("invnew-existencia").value)||0;
+    const costoUnitario = Number(document.getElementById("invnew-costo").value)||0;
+    if (!nombre){ alert("Escribe el nombre del producto."); return; }
+    if (this.state.inv.productos.some(p=>p.nombre.toLowerCase()===nombre.toLowerCase())){ alert("Ya existe un producto con ese nombre."); return; }
+    const nuevo = {id:uid(), codigo: nombre.slice(0,3).toUpperCase(), nombre, existencia, costoUnitario};
+    const movimientos = [...this.state.inv.movimientos];
+    if (existencia>0){
+      movimientos.unshift({id:uid(), fecha:todayISO(), producto:nombre, tipo:"entrada", cantidad:existencia, costoUnitario, factura:"", proveedor:"Alta manual"});
+    }
+    saveKey("inv", {productos:[...this.state.inv.productos, nuevo], movimientos: movimientos.slice(0,30)});
+    this.render();
+  },
   registrarMovimiento(){
     const productoId = document.getElementById("inv-producto").value;
     const tipo = document.getElementById("inv-tipo").value;
@@ -391,18 +555,6 @@ const App = {
     saveKey("pre", {...this.state.pre, [field]: Number(pctStr)/100});
     this.render();
   },
-  addProductoPrecio(){
-    const nombre = document.getElementById("pre-nombre").value.trim();
-    const costoUnitario = Number(document.getElementById("pre-costo").value);
-    if (!nombre || !costoUnitario) { alert("Completa producto y costo."); return; }
-    saveKey("pre", {...this.state.pre, productos:[...this.state.pre.productos, {id:uid(), nombre, costoUnitario}]});
-    this.render();
-  },
-  removeProductoPrecio(id){
-    if (!confirm("¿Eliminar este producto?")) return;
-    saveKey("pre", {...this.state.pre, productos: this.state.pre.productos.filter(p=>p.id!==id)});
-    this.render();
-  },
 
   // ---- depreciacion ----
   addActivo(){
@@ -420,6 +572,77 @@ const App = {
     saveKey("dep", this.state.dep.filter(a=>a.id!==id));
     this.render();
   },
+
+  // ---- asientos contables ----
+  registrarAsiento({fecha, origen, referencia, glosa, tipo, detalle}){
+    const detalleLimpio = mergeDetalleAsiento(detalle);
+    if (detalleLimpio.length===0) return null;
+    const numero = "AS-" + pad4(this.state.asi.length+1);
+    const asiento = {id:uid(), numero, fecha, origen, referencia, glosa, tipo, detalle:detalleLimpio};
+    saveKey("asi", [...this.state.asi, asiento]);
+    return asiento;
+  },
+  toggleAsientoForm(){
+    this.asientoFormOpen = !this.asientoFormOpen;
+    this.asientoEditId = null;
+    this.asientoLineIdx = 1;
+    this.render();
+  },
+  toggleAsientoEdit(id){
+    if (this.asientoEditId===id){ this.asientoEditId = null; }
+    else {
+      this.asientoEditId = id;
+      this.asientoFormOpen = false;
+      const a = this.state.asi.find(x=>x.id===id);
+      this.asientoLineIdx = a ? Math.max(1, a.detalle.length-1) : 1;
+    }
+    this.render();
+  },
+  addAsientoLine(){
+    this.asientoLineIdx++;
+    document.getElementById("asiento-lines").insertAdjacentHTML("beforeend", asientoLineRowHTML(this.asientoLineIdx, {}));
+  },
+  removeAsientoLine(idx){
+    const row = document.getElementById("asiline-"+idx);
+    if (row) row.remove();
+    onAsientoLineInput();
+  },
+  guardarAsiento(existingId){
+    const fecha = document.getElementById("asi-fecha").value || todayISO();
+    const glosa = document.getElementById("asi-glosa").value.trim();
+    const rows = document.querySelectorAll("#asiento-lines .fact-item-row");
+    const detalle = [];
+    rows.forEach(row => {
+      const idx = row.dataset.idx;
+      const cuentaId = document.getElementById("asiline-cuenta-"+idx).value;
+      const debe = Number(document.getElementById("asiline-debe-"+idx).value)||0;
+      const haber = Number(document.getElementById("asiline-haber-"+idx).value)||0;
+      if (cuentaId && (debe>0 || haber>0)) detalle.push({cuentaId, debe, haber});
+    });
+    const totalDebe = detalle.reduce((s,l)=>s+l.debe,0);
+    const totalHaber = detalle.reduce((s,l)=>s+l.haber,0);
+    if (!glosa) { alert("Escribe una glosa / descripcion para el asiento."); return; }
+    if (detalle.length<2) { alert("Agrega al menos dos lineas (una cuenta al debe y otra al haber)."); return; }
+    if (Math.round((totalDebe-totalHaber)*100)!==0) { alert(`El asiento no cuadra. Debe: ${CRC(totalDebe)} — Haber: ${CRC(totalHaber)}. Deben ser iguales.`); return; }
+    if (existingId){
+      saveKey("asi", this.state.asi.map(a => a.id===existingId ? {...a, fecha, glosa, detalle} : a));
+      this.asientoEditId = null;
+    } else {
+      const numero = "AS-" + pad4(this.state.asi.length+1);
+      saveKey("asi", [...this.state.asi, {id:uid(), numero, fecha, origen:"manual", referencia:"", glosa, tipo:"manual", detalle}]);
+      this.asientoFormOpen = false;
+    }
+    this.asientoLineIdx = 1;
+    this.render();
+  },
+  removeAsiento(id){
+    if (!confirm("¿Eliminar este asiento? Esto afecta los saldos calculados de Bancos y Mayor.")) return;
+    saveKey("asi", this.state.asi.filter(a=>a.id!==id));
+    this.render();
+  },
+
+  // ---- mayor ----
+  verMayor(id){ this.mayorCuentaId = id; this.render(); },
 
   // ---- facturas ----
   setFacturaTipo(tipo){ this.facturaTipo = tipo; this.facturaAvisos=[]; this.facturaOk=""; this.render(); },
@@ -441,6 +664,13 @@ const App = {
     const plazoDiasEl = document.getElementById("fac-plazo");
     const plazoDias = plazoDiasEl ? Number(plazoDiasEl.value)||0 : 0;
     const incluirIva = document.getElementById("fac-iva").checked;
+
+    let banco = null;
+    if (condicion === "contado"){
+      const bancoSel = document.getElementById("fac-banco");
+      banco = bancoSel ? this.state.ban.find(b=>b.id===bancoSel.value) : null;
+      if (!banco){ alert("Selecciona la cuenta de pago (caja, banco, tarjeta o SINPE)."); return; }
+    }
 
     const rows = document.querySelectorAll("#factura-items .fact-item-row");
     const items = [];
@@ -465,11 +695,13 @@ const App = {
 
     const itemsResueltos = items.map(it => {
       let prod = productos.find(p => p.nombre.toLowerCase()===it.nombre.toLowerCase());
+      let costoUnitarioAlMomento = null;
       if (tipo==="venta"){
         if (!prod){
           avisos.push(`"${it.nombre}" no esta en el inventario; se facturo sin descontar existencia.`);
         } else {
           if (prod.existencia < it.cantidad) avisos.push(`Existencia insuficiente de "${prod.nombre}" (quedo en negativo).`);
+          costoUnitarioAlMomento = prod.costoUnitario;
           prod.existencia = prod.existencia - it.cantidad;
           movimientos.unshift({id:uid(), fecha, producto:prod.nombre, tipo:"salida", cantidad:it.cantidad, costoUnitario:prod.costoUnitario, factura:numero});
         }
@@ -483,7 +715,13 @@ const App = {
         prod.existencia = existenciaNueva;
         movimientos.unshift({id:uid(), fecha, producto:prod.nombre, tipo:"entrada", cantidad:it.cantidad, costoUnitario:it.precioUnitario, factura:numero});
       }
-      return {nombre:it.nombre, cantidad:it.cantidad, precioUnitario:it.precioUnitario, subtotal: it.cantidad*it.precioUnitario};
+      return {
+        nombre:it.nombre, cantidad:it.cantidad, precioUnitario:it.precioUnitario, subtotal: it.cantidad*it.precioUnitario,
+        cuentaInventarioId: prod ? prod.cuentaInventarioId : null,
+        cuentaVentaId: prod ? prod.cuentaVentaId : null,
+        cuentaCostoId: prod ? prod.cuentaCostoId : null,
+        costoUnitarioAlMomento,
+      };
     });
 
     const subtotal = itemsResueltos.reduce((s,i)=>s+i.subtotal,0);
@@ -496,11 +734,19 @@ const App = {
     saveKey("fac", [factura, ...this.state.fac]);
     saveKey("inv", {productos, movimientos: movimientos.slice(0,30)});
 
+    const cuentaCxCoCxP = entidad.cuentaId || (tipo==="venta" ? this.state.cfg.cuentaCxCDefault : this.state.cfg.cuentaCxPDefault);
     if (condicion==="credito"){
-      const nuevaCuenta = {id:uid(), nombre:contraparte, identificacion, fecha, plazoDias, factura:numero, monto:total, abonado:0};
+      const nuevaCuenta = {id:uid(), nombre:contraparte, identificacion, fecha, plazoDias, factura:numero, monto:total, abonado:0, cuentaId: cuentaCxCoCxP};
       if (tipo==="venta") saveKey("cxc", [...this.state.cxc, nuevaCuenta]);
       else saveKey("cxp", [...this.state.cxp, nuevaCuenta]);
     }
+
+    const detalleAsiento = construirDetalleFactura(factura, itemsResueltos, this.state.cfg, banco?banco.cuentaId:null, cuentaCxCoCxP);
+    const metodoTxt = banco ? ` (${banco.nombre})` : "";
+    this.registrarAsiento({
+      fecha, origen: tipo==="venta" ? "factura-venta" : "factura-compra", referencia: numero,
+      glosa: `Factura ${numero} - ${contraparte}${metodoTxt}`, tipo: "automatico", detalle: detalleAsiento,
+    });
 
     this.facturaAvisos = avisos;
     this.facturaOk = `Factura ${numero} creada por ${CRC(total)}.`;
@@ -551,6 +797,121 @@ function resolveEntidad(prefix, kind){
     return list.find(c=>c.id===sel.value) || null;
   }
   return null;
+}
+// ---------------- selector de cuenta contable (catalogo) ----------------
+function selectorCuentaHTML(id, selectedId, opts){
+  opts = opts || {};
+  const placeholder = opts.placeholder || "Sin asignar";
+  const cuentas = App.state.cat.filter(c=>c.esDetalle);
+  const grupos = {};
+  cuentas.forEach(c => { (grupos[c.tipo] = grupos[c.tipo] || []).push(c); });
+  const orden = ["Activo","Pasivo","Patrimonio","Ingreso","Costo","Gasto"];
+  const optionsHTML = orden.filter(t=>grupos[t]).map(t => `
+    <optgroup label="${t}">
+      ${grupos[t].sort((a,b)=>a.codigo.localeCompare(b.codigo)).map(c=>`<option value="${c.id}" ${selectedId===c.id?'selected':''}>${esc(c.codigo)} - ${esc(c.nombre)}</option>`).join("")}
+    </optgroup>`).join("");
+  return `<select class="input" id="${id}" style="${opts.style||'min-width:170px'}" ${opts.onchange?`onchange="${opts.onchange}"`:""}>
+    <option value="">${esc(placeholder)}</option>
+    ${optionsHTML}
+  </select>`;
+}
+function cuentaLabel(cuentaId){
+  const c = App.state.cat.find(x=>x.id===cuentaId);
+  return c ? `${c.codigo} - ${c.nombre}` : "—";
+}
+// saldo (debe-haber, segun naturaleza) de una cuenta a partir de los asientos contables
+function saldoCuenta(cuentaId, state){
+  const cuenta = state.cat.find(c=>c.id===cuentaId);
+  if (!cuenta) return 0;
+  let debe = 0, haber = 0;
+  (state.asi||[]).forEach(a => a.detalle.forEach(l => {
+    if (l.cuentaId===cuentaId){ debe += Number(l.debe)||0; haber += Number(l.haber)||0; }
+  }));
+  return cuenta.naturaleza==="Deudora" ? (debe-haber) : (haber-debe);
+}
+function saldoBanco(banco, state){
+  return (Number(banco.saldoInicial)||0) + saldoCuenta(banco.cuentaId, state);
+}
+function selectorBancoHTML(id, selectedId, opts){
+  opts = opts || {};
+  const placeholder = opts.placeholder || "Cuenta de pago...";
+  const bancos = App.state.ban;
+  return `<select class="input" id="${id}" style="${opts.style||'min-width:170px'}" ${opts.onchange?`onchange="${opts.onchange}"`:""}>
+    <option value="">${esc(placeholder)}</option>
+    ${bancos.map(b=>`<option value="${b.id}" ${selectedId===b.id?'selected':''}>${esc(b.nombre)} (${esc(b.tipo)})</option>`).join("")}
+  </select>`;
+}
+// ---------------- helpers de asientos contables ----------------
+function mergeDetalleAsiento(lineas){
+  const map = {};
+  lineas.forEach(l => {
+    if (!l.cuentaId) return;
+    if (!map[l.cuentaId]) map[l.cuentaId] = {cuentaId:l.cuentaId, debe:0, haber:0};
+    map[l.cuentaId].debe += Number(l.debe)||0;
+    map[l.cuentaId].haber += Number(l.haber)||0;
+  });
+  return Object.values(map)
+    .map(l => ({cuentaId:l.cuentaId, debe:Math.round(l.debe*100)/100, haber:Math.round(l.haber*100)/100}))
+    .filter(l => l.debe!==0 || l.haber!==0);
+}
+function construirDetalleFactura(factura, itemsResueltos, cfg, bancoCuentaId, cuentaCxCoCxP){
+  const detalle = [];
+  if (factura.tipo === "venta"){
+    if (factura.condicion === "contado") detalle.push({cuentaId: bancoCuentaId, debe: factura.total, haber: 0});
+    else detalle.push({cuentaId: cuentaCxCoCxP, debe: factura.total, haber: 0});
+
+    itemsResueltos.forEach(it => {
+      detalle.push({cuentaId: it.cuentaVentaId || cfg.cuentaVentasDefault, debe: 0, haber: it.subtotal});
+    });
+    if (factura.iva > 0) detalle.push({cuentaId: cfg.cuentaIvaVentas, debe: 0, haber: factura.iva});
+
+    itemsResueltos.forEach(it => {
+      if (it.costoUnitarioAlMomento != null){
+        const montoCosto = it.cantidad * it.costoUnitarioAlMomento;
+        detalle.push({cuentaId: it.cuentaCostoId || cfg.cuentaCostoDefault, debe: montoCosto, haber: 0});
+        detalle.push({cuentaId: it.cuentaInventarioId || cfg.cuentaInventarioDefault, debe: 0, haber: montoCosto});
+      }
+    });
+  } else {
+    itemsResueltos.forEach(it => {
+      detalle.push({cuentaId: it.cuentaInventarioId || cfg.cuentaInventarioDefault, debe: it.subtotal, haber: 0});
+    });
+    if (factura.iva > 0) detalle.push({cuentaId: cfg.cuentaIvaCompras, debe: factura.iva, haber: 0});
+    if (factura.condicion === "contado") detalle.push({cuentaId: bancoCuentaId, debe: 0, haber: factura.total});
+    else detalle.push({cuentaId: cuentaCxCoCxP, debe: 0, haber: factura.total});
+  }
+  return detalle;
+}
+function asientoLineRowHTML(idx, line){
+  line = line || {};
+  return `
+    <div class="fact-item-row" id="asiline-${idx}" data-idx="${idx}">
+      ${selectorCuentaHTML('asiline-cuenta-'+idx, line.cuentaId, {placeholder:'Cuenta...', style:'flex:2; min-width:180px'})}
+      <input class="input price" id="asiline-debe-${idx}" type="number" placeholder="Debe" value="${line.debe||''}" oninput="onAsientoLineInput()" />
+      <input class="input price" id="asiline-haber-${idx}" type="number" placeholder="Haber" value="${line.haber||''}" oninput="onAsientoLineInput()" />
+      <button class="icon-btn" onclick="App.removeAsientoLine(${idx})">${ICONS.trash}</button>
+    </div>`;
+}
+function asientoLinesInitialHTML(existing){
+  if (existing && existing.length) return existing.map((l,i)=>asientoLineRowHTML(i, l)).join("");
+  return asientoLineRowHTML(0,{}) + asientoLineRowHTML(1,{});
+}
+function onAsientoLineInput(){
+  let debe = 0, haber = 0;
+  document.querySelectorAll("#asiento-lines .fact-item-row").forEach(row => {
+    const idx = row.dataset.idx;
+    debe += Number(document.getElementById("asiline-debe-"+idx).value)||0;
+    haber += Number(document.getElementById("asiline-haber-"+idx).value)||0;
+  });
+  const d = document.getElementById("asi-total-debe"), h = document.getElementById("asi-total-haber"), diff = document.getElementById("asi-diferencia");
+  if (d) d.textContent = CRC(debe);
+  if (h) h.textContent = CRC(haber);
+  if (diff) diff.textContent = "Diferencia " + CRC(debe-haber);
+}
+// ---------------- helper de precio de venta automatico ----------------
+function precioVentaCalculado(prod, pre){
+  const ci = prod.costoUnitario*pre.pctIndirectos, gf = prod.costoUnitario*pre.pctFijos, ut = prod.costoUnitario*pre.pctUtilidad;
+  return prod.costoUnitario + ci + gf + ut;
 }
 function onInvTipoChange(){
   const v = document.getElementById("inv-tipo").value;
@@ -637,7 +998,9 @@ function renderCuentas(rows, kind, key){
 
   const rowsHTML = enriched.length===0
     ? `<tr><td colspan="9" class="empty-cell">Aun no hay ${kind==="cliente"?"clientes":"proveedores"} registrados.</td></tr>`
-    : enriched.map(r => `
+    : enriched.map(r => {
+      const abonando = App.abonoTarget && App.abonoTarget.key===key && App.abonoTarget.id===r.id;
+      return `
       <tr>
         <td>${esc(r.nombre)}</td>
         <td>${esc(r.factura)||"—"}</td>
@@ -648,10 +1011,19 @@ function renderCuentas(rows, kind, key){
         <td class="num" style="text-align:right; font-weight:600">${CRC(r.saldo)}</td>
         <td><span class="badge badge-${r.tone}">${r.label}</span></td>
         <td style="white-space:nowrap">
-          ${r.saldo>0 ? `<button class="link-btn" onclick="App.abonarCuenta('${key}','${r.id}')">Abonar</button>` : ""}
+          ${r.saldo>0 ? `<button class="link-btn" onclick="App.toggleAbono('${key}','${r.id}')">${abonando?'Cerrar':'Abonar'}</button>` : ""}
           <button class="icon-btn" onclick="App.removeCuenta('${key}','${r.id}')">${ICONS.trash}</button>
         </td>
-      </tr>`).join("");
+      </tr>
+      ${abonando ? `<tr><td colspan="9" style="padding:0;">
+        <div class="form-row" style="background:var(--grey-bg);">
+          <span style="font-size:13px; color:var(--muted); white-space:nowrap;">Abono de ${esc(r.nombre)} — saldo ${CRC(r.saldo)}</span>
+          <input class="input" id="abono-monto" style="width:130px" type="number" placeholder="Monto" value="${r.saldo}" />
+          ${selectorBancoHTML('abono-banco', null, {placeholder:'Cuenta de pago...', style:'min-width:190px'})}
+          <button class="add-btn" style="background:${accent}; color:#fff;" onclick="App.confirmarAbono()">${ICONS.plus} Confirmar abono</button>
+        </div>
+      </td></tr>` : ""}`;
+    }).join("");
 
   return `
     ${header(title, subtitle)}
@@ -696,14 +1068,16 @@ function renderDirectorio(list, kind){
   const subtitle = kind==="cliente"
     ? "Guarda tus clientes una vez y luego solo selecciónalos en Facturas y Cuentas por cobrar"
     : "Guarda tus proveedores una vez y luego solo selecciónalos en Facturas, Cuentas por pagar e Inventario";
+  const cuentaDefaultCodigo = kind==="cliente" ? App.state.cfg.cuentaCxCDefault : App.state.cfg.cuentaCxPDefault;
   const rowsHTML = list.length===0
-    ? `<tr><td colspan="5" class="empty-cell">Aun no has agregado ${kind==="cliente"?"clientes":"proveedores"}.</td></tr>`
+    ? `<tr><td colspan="6" class="empty-cell">Aun no has agregado ${kind==="cliente"?"clientes":"proveedores"}.</td></tr>`
     : list.map(c => `
       <tr>
         <td>${esc(c.nombre)}</td>
         <td>${esc(c.identificacion)||"—"}</td>
         <td>${esc(c.telefono)||"—"}</td>
         <td>${esc(c.email)||"—"}</td>
+        <td>${selectorCuentaHTML(kind+'-cta-'+c.id, c.cuentaId, {placeholder:`Por defecto (${cuentaDefaultCodigo})`, style:"min-width:190px", onchange:`App.setEntidadCuenta('${kind}','${c.id}', this.value)`})}</td>
         <td><button class="icon-btn" onclick="App.removeDirectorio('${kind}','${c.id}')">${ICONS.trash}</button></td>
       </tr>`).join("");
 
@@ -711,7 +1085,7 @@ function renderDirectorio(list, kind){
     ${header(title, subtitle)}
     <div class="kpi-grid">${kpi(kind==="cliente"?"Clientes guardados":"Proveedores guardados", list.length)}</div>
     <div class="panel">
-      <div class="panel-head"><span class="note">Nuevo ${kind}</span></div>
+      <div class="panel-head"><span class="note">Nuevo ${kind}. La cuenta contable es opcional: si no se asigna, se usa la cuenta por defecto (${cuentaDefaultCodigo}) desde Catalogo contable → Configuracion</span></div>
       <div class="form-row">
         <input class="input" id="${key}-nombre" placeholder="Nombre" />
         <input class="input" id="${key}-id" style="width:130px" placeholder="Cedula / ID" />
@@ -721,7 +1095,7 @@ function renderDirectorio(list, kind){
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Nombre</th><th>Cedula / ID</th><th>Telefono</th><th>Correo</th><th></th></tr></thead>
+          <thead><tr><th>Nombre</th><th>Cedula / ID</th><th>Telefono</th><th>Correo</th><th>Cuenta contable</th><th></th></tr></thead>
           <tbody>${rowsHTML}</tbody>
         </table>
       </div>
@@ -732,12 +1106,16 @@ function renderDirectorio(list, kind){
 function renderInventario(inv){
   const {productos, movimientos} = inv;
   const valorTotal = productos.reduce((s,p)=>s+p.existencia*p.costoUnitario,0);
+  const cfg = App.state.cfg;
   const rowsHTML = productos.map(p => `
     <tr>
       <td>${esc(p.nombre)}</td>
       <td class="num" style="text-align:right; ${p.existencia<0?'color:var(--red)':''}">${p.existencia}</td>
       <td class="num" style="text-align:right">${CRC(p.costoUnitario)}</td>
       <td class="num" style="text-align:right; font-weight:600">${CRC(p.existencia*p.costoUnitario)}</td>
+      <td>${selectorCuentaHTML('prodcta-inv-'+p.id, p.cuentaInventarioId, {placeholder:`Por defecto (${cfg.cuentaInventarioDefault})`, style:"min-width:170px", onchange:`App.setProductoCuenta('${p.id}','cuentaInventarioId', this.value)`})}</td>
+      <td>${selectorCuentaHTML('prodcta-ven-'+p.id, p.cuentaVentaId, {placeholder:`Por defecto (${cfg.cuentaVentasDefault})`, style:"min-width:170px", onchange:`App.setProductoCuenta('${p.id}','cuentaVentaId', this.value)`})}</td>
+      <td>${selectorCuentaHTML('prodcta-cos-'+p.id, p.cuentaCostoId, {placeholder:`Por defecto (${cfg.cuentaCostoDefault})`, style:"min-width:170px", onchange:`App.setProductoCuenta('${p.id}','cuentaCostoId', this.value)`})}</td>
       <td><button class="icon-btn" onclick="App.removeProducto('${p.id}')">${ICONS.trash}</button></td>
     </tr>`).join("");
   const movHTML = movimientos.map(m => `
@@ -759,6 +1137,15 @@ function renderInventario(inv){
       ${kpi("Valor de inventario", CRC(valorTotal))}
     </div>
     <div class="panel">
+      <div class="panel-head"><span class="note">Nuevo producto (alta manual, sin necesidad de una compra a proveedor)</span></div>
+      <div class="form-row">
+        <input class="input" id="invnew-nombre" placeholder="Nombre del producto" />
+        <input class="input" id="invnew-existencia" style="width:130px" type="number" placeholder="Existencia inicial" value="0" />
+        <input class="input" id="invnew-costo" style="width:140px" type="number" placeholder="Costo unitario" />
+        <button class="add-btn" style="background:var(--green-bg); color:var(--green);" onclick="App.addProductoNuevo()">${ICONS.plus} Crear producto</button>
+      </div>
+    </div>
+    <div class="panel">
       <div class="panel-head"><span class="note">Ajuste manual de existencias</span></div>
       <div class="form-row">
         <select class="input" id="inv-producto">
@@ -778,10 +1165,11 @@ function renderInventario(inv){
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Producto</th><th style="text-align:right">Existencia</th><th style="text-align:right">Costo unitario</th><th style="text-align:right">Valor</th><th></th></tr></thead>
+          <thead><tr><th>Producto</th><th style="text-align:right">Existencia</th><th style="text-align:right">Costo unitario</th><th style="text-align:right">Valor</th><th>Cta. inventario</th><th>Cta. venta</th><th>Cta. costo</th><th></th></tr></thead>
           <tbody>${rowsHTML}</tbody>
         </table>
       </div>
+      <div class="storage-note" style="padding:10px 18px 14px;">Las cuentas de venta/costo/inventario son opcionales por producto. Si no se asignan, se usan las cuentas por defecto configuradas en Catalogo contable.</div>
     </div>
     ${movimientos.length>0 ? `
     <div class="panel">
@@ -852,13 +1240,16 @@ function pctInput(label, value, onchange){
 }
 
 // ---------------- render: precio de venta ----------------
-function renderPrecios(pre){
-  const {pctIndirectos, pctFijos, pctUtilidad, productos} = pre;
+function renderPrecios(state){
+  const {pctIndirectos, pctFijos, pctUtilidad} = state.pre;
+  const productos = state.inv.productos;
   const calc = productos.map(p=>{
     const ci = p.costoUnitario*pctIndirectos, gf = p.costoUnitario*pctFijos, ut = p.costoUnitario*pctUtilidad;
-    return {...p, ci, gf, ut, precioVenta: p.costoUnitario+ci+gf+ut};
+    return {...p, ci, gf, ut, precioVenta: precioVentaCalculado(p, state.pre)};
   });
-  const rowsHTML = calc.map(p => `
+  const rowsHTML = calc.length===0
+    ? `<tr><td colspan="6" class="empty-cell">Agrega productos desde el modulo Inventario para ver su precio de venta calculado.</td></tr>`
+    : calc.map(p => `
     <tr>
       <td>${esc(p.nombre)}</td>
       <td class="num" style="text-align:right">${CRC(p.costoUnitario)}</td>
@@ -866,13 +1257,12 @@ function renderPrecios(pre){
       <td class="num" style="text-align:right; color:var(--muted)">${CRC(p.gf)}</td>
       <td class="num" style="text-align:right; color:var(--muted)">${CRC(p.ut)}</td>
       <td class="num" style="text-align:right; font-weight:600; color:var(--green)">${CRC(p.precioVenta)}</td>
-      <td><button class="icon-btn" onclick="App.removeProductoPrecio('${p.id}')">${ICONS.trash}</button></td>
     </tr>`).join("");
 
   return `
-    ${header("Precio de venta","Costeo por margen (cost-plus): costo + indirectos + gastos fijos + utilidad")}
+    ${header("Precio de venta","Costeo por margen (cost-plus): costo + indirectos + gastos fijos + utilidad. Se calcula solo para cada producto de Inventario")}
     <div class="panel">
-      <div class="panel-head"><span class="note">Parametros generales</span></div>
+      <div class="panel-head"><span class="note">Parametros generales — al editarlos se recalculan todos los precios automaticamente</span></div>
       <div class="form-row">
         ${pctInput("Costos indirectos", pctIndirectos, "App.setPrecioPct('pctIndirectos', this.value)")}
         ${pctInput("Gastos fijos", pctFijos, "App.setPrecioPct('pctFijos', this.value)")}
@@ -880,17 +1270,14 @@ function renderPrecios(pre){
       </div>
     </div>
     <div class="panel">
-      <div class="form-row">
-        <input class="input" id="pre-nombre" placeholder="Producto" />
-        <input class="input" id="pre-costo" style="width:140px" type="number" placeholder="Costo unitario" />
-        <button class="add-btn" style="background:var(--green-bg); color:var(--green);" onclick="App.addProductoPrecio()">${ICONS.plus} Agregar</button>
-      </div>
+      <div class="panel-head"><span class="note">Precio calculado por producto. Para agregar o quitar productos ve al modulo Inventario</span></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Producto</th><th style="text-align:right">Costo</th><th style="text-align:right">+Indirectos</th><th style="text-align:right">+Fijos</th><th style="text-align:right">+Utilidad</th><th style="text-align:right">Precio venta</th><th></th></tr></thead>
+          <thead><tr><th>Producto</th><th style="text-align:right">Costo</th><th style="text-align:right">+Indirectos</th><th style="text-align:right">+Fijos</th><th style="text-align:right">+Utilidad</th><th style="text-align:right">Precio venta</th></tr></thead>
           <tbody>${rowsHTML}</tbody>
         </table>
       </div>
+      <div class="storage-note" style="padding:10px 18px 14px;">Este precio se sugiere automaticamente en Facturas al vender el producto; puedes ajustarlo linea por linea si es necesario.</div>
     </div>
   `;
 }
@@ -942,6 +1329,281 @@ function renderDepreciacion(dep){
   `;
 }
 
+// ---------------- render: bancos ----------------
+function renderBancos(state){
+  const enriched = state.ban.map(b => ({...b, saldo: saldoBanco(b, state)}));
+  const totalEfectivo = enriched.reduce((s,b)=>s+b.saldo,0);
+  const iconoTipo = {Efectivo: ICONS.wallet, Banco: ICONS.bank, Tarjeta: ICONS.receipt, SINPE: ICONS.trend};
+  const rowsHTML = enriched.length===0
+    ? `<tr><td colspan="6" class="empty-cell">Aun no has agregado cuentas de banco o caja.</td></tr>`
+    : enriched.map(b => `
+      <tr>
+        <td style="display:flex; align-items:center; gap:8px;">${iconoTipo[b.tipo]||ICONS.bank}${esc(b.nombre)}</td>
+        <td><span class="badge badge-muted">${esc(b.tipo)}</span></td>
+        <td>${esc(b.numeroCuenta)||"—"}</td>
+        <td>${selectorCuentaHTML('bancta-'+b.id, b.cuentaId, {style:"min-width:190px", onchange:`App.setBancoCuenta('${b.id}', this.value)`})}</td>
+        <td class="num" style="text-align:right; font-weight:600; ${b.saldo<0?'color:var(--red)':''}">${CRC(b.saldo)}</td>
+        <td><button class="icon-btn" onclick="App.removeBanco('${b.id}')">${ICONS.trash}</button></td>
+      </tr>`).join("");
+
+  return `
+    ${header("Bancos","Efectivo, cuentas bancarias, tarjeta y SINPE. El saldo se calcula solo a partir de los asientos contables y del saldo inicial")}
+    <div class="kpi-grid">
+      ${kpi("Cuentas registradas", state.ban.length)}
+      ${kpi("Efectivo total disponible", CRC(totalEfectivo), totalEfectivo<0?"#A13D2E":"#2F6E4F")}
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="note">Nueva cuenta de banco / caja / tarjeta</span></div>
+      <div class="form-row">
+        <input class="input" id="ban-nombre" placeholder="Nombre (ej. Caja, BAC Colones)" />
+        <select class="input" id="ban-tipo" style="width:120px">
+          <option value="Efectivo">Efectivo</option>
+          <option value="Banco">Banco</option>
+          <option value="Tarjeta">Tarjeta</option>
+          <option value="SINPE">SINPE</option>
+        </select>
+        <input class="input" id="ban-numero" style="width:150px" placeholder="No. cuenta (opcional)" />
+        <input class="input" id="ban-saldo" style="width:130px" type="number" placeholder="Saldo inicial" value="0" />
+        ${selectorCuentaHTML('ban-cuenta', null, {placeholder:"Cuenta contable...", style:"min-width:190px"})}
+        <button class="add-btn" style="background:var(--green-bg); color:var(--green);" onclick="App.addBanco()">${ICONS.plus} Agregar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nombre</th><th>Tipo</th><th>No. cuenta</th><th>Cuenta contable</th><th style="text-align:right">Saldo</th><th></th></tr></thead>
+          <tbody>${rowsHTML}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ---------------- render: catalogo de cuentas ----------------
+function renderCatalogo(state){
+  const cuentas = [...state.cat].sort((a,b)=>a.codigo.localeCompare(b.codigo));
+  const totalDetalle = cuentas.filter(c=>c.esDetalle).length;
+  const padreOptions = cuentas.map(c=>`<option value="${c.id}">${esc(c.codigo)} - ${esc(c.nombre)}</option>`).join("");
+  const rowsHTML = cuentas.map(c => {
+    const padre = state.cat.find(p=>p.id===c.padreId);
+    const sangria = c.padreId ? 18 : 0;
+    return `
+    <tr>
+      <td class="num" style="padding-left:${18+sangria}px">${esc(c.codigo)}</td>
+      <td>${esc(c.nombre)}</td>
+      <td><span class="badge badge-muted">${esc(c.tipo)}</span></td>
+      <td>${c.naturaleza}</td>
+      <td>${padre?esc(padre.nombre):"—"}</td>
+      <td>${c.esDetalle ? `<span class="badge badge-ok">Detalle</span>` : `<span class="badge badge-muted">Mayor</span>`}</td>
+      <td><button class="icon-btn" onclick="App.removeCuentaCatalogo('${c.id}')">${ICONS.trash}</button></td>
+    </tr>`;
+  }).join("");
+
+  const cfg = state.cfg;
+  const cfgRow = (label, field) => `
+    <div class="pct-input" style="min-width:190px">
+      <span class="lbl">${esc(label)}</span>
+      ${selectorCuentaHTML('cfg-'+field, cfg[field], {style:"min-width:190px", onchange:`App.setCfg('${field}', this.value)`})}
+    </div>`;
+
+  return `
+    ${header("Catalogo contable","Cuentas de mayor y detalle. Solo las cuentas de detalle reciben movimientos")}
+    <div class="kpi-grid">
+      ${kpi("Cuentas totales", cuentas.length)}
+      ${kpi("Cuentas de detalle", totalDetalle)}
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="note">Cuentas por defecto del sistema — se usan cuando un cliente, proveedor o producto no tiene una cuenta especifica asignada</span></div>
+      <div class="form-row" style="flex-wrap:wrap;">
+        ${cfgRow("Cuentas por cobrar (clientes)","cuentaCxCDefault")}
+        ${cfgRow("Cuentas por pagar (proveedores)","cuentaCxPDefault")}
+        ${cfgRow("Inventario","cuentaInventarioDefault")}
+        ${cfgRow("Ventas","cuentaVentasDefault")}
+        ${cfgRow("Costo de ventas","cuentaCostoDefault")}
+        ${cfgRow("IVA por pagar (ventas)","cuentaIvaVentas")}
+        ${cfgRow("IVA credito fiscal (compras)","cuentaIvaCompras")}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="note">Nueva cuenta</span></div>
+      <div class="form-row">
+        <input class="input" id="cat-codigo" style="width:90px" placeholder="Codigo" />
+        <input class="input" id="cat-nombre" placeholder="Nombre de la cuenta" />
+        <select class="input" id="cat-tipo" style="width:120px">
+          <option value="Activo">Activo</option>
+          <option value="Pasivo">Pasivo</option>
+          <option value="Patrimonio">Patrimonio</option>
+          <option value="Ingreso">Ingreso</option>
+          <option value="Costo">Costo</option>
+          <option value="Gasto">Gasto</option>
+        </select>
+        <select class="input" id="cat-padre" style="min-width:170px">
+          <option value="">Sin cuenta padre (mayor)</option>
+          ${padreOptions}
+        </select>
+        <label class="checkbox-label"><input type="checkbox" id="cat-detalle" checked /> Cuenta de detalle</label>
+        <button class="add-btn" style="background:var(--green-bg); color:var(--green);" onclick="App.addCuentaCatalogo()">${ICONS.plus} Agregar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Codigo</th><th>Nombre</th><th>Tipo</th><th>Naturaleza</th><th>Cuenta padre</th><th>Nivel</th><th></th></tr></thead>
+          <tbody>${rowsHTML}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ---------------- render: asientos contables (diario) ----------------
+function renderAsientos(state){
+  const rows = [...state.asi].sort((a,b)=> b.numero.localeCompare(a.numero));
+  const totalAsientos = state.asi.length;
+  const totalMovimiento = state.asi.reduce((s,a)=>s+a.detalle.reduce((s2,l)=>s2+l.debe,0),0);
+  const formAbierto = App.asientoFormOpen;
+  const editId = App.asientoEditId;
+
+  const nuevoFormHTML = formAbierto ? `
+    <div style="padding:16px 18px; border-bottom:1px solid var(--border2); background:var(--grey-bg);">
+      <div class="form-row" style="padding:0; border:none;">
+        <input class="input" id="asi-fecha" style="width:145px" type="date" value="${todayISO()}" />
+        <input class="input" id="asi-glosa" placeholder="Glosa / descripcion del asiento" style="flex:2; min-width:220px" />
+      </div>
+      <div id="asiento-lines" style="margin-top:8px;">${asientoLinesInitialHTML(null)}</div>
+      <button class="link-btn" onclick="App.addAsientoLine()">+ Agregar linea</button>
+      <div class="fact-totals">
+        <div class="line">Debe <b class="num" id="asi-total-debe">₡0</b></div>
+        <div class="line">Haber <b class="num" id="asi-total-haber">₡0</b></div>
+        <div class="grand" id="asi-diferencia">Diferencia ₡0</div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+        <button class="add-btn" style="background:#fff; border:1px solid #DAD8CC; color:var(--muted);" onclick="App.toggleAsientoForm()">Cancelar</button>
+        <button class="add-btn" style="background:#1F2E24; color:#fff;" onclick="App.guardarAsiento()">${ICONS.plus} Guardar asiento</button>
+      </div>
+    </div>` : "";
+
+  const rowsHTML = rows.length===0
+    ? `<tr><td colspan="6" class="empty-cell">Aun no hay asientos contables. Se generan solos al facturar o registrar abonos, o puedes crearlos manualmente.</td></tr>`
+    : rows.map(a => {
+      const totDebe = a.detalle.reduce((s,l)=>s+l.debe,0);
+      const editando = editId===a.id;
+      return `
+      <tr>
+        <td class="num">${a.numero}</td>
+        <td>${a.fecha}</td>
+        <td>${esc(a.glosa)}${a.referencia?`<div style="font-size:11px; color:var(--faint)">Ref: ${esc(a.referencia)}</div>`:""}</td>
+        <td>${a.tipo==="automatico" ? `<span class="badge badge-ok">Automatico</span>` : `<span class="badge badge-muted">Manual</span>`}</td>
+        <td class="num" style="text-align:right; font-weight:600">${CRC(totDebe)}</td>
+        <td style="white-space:nowrap">
+          <button class="link-btn" onclick="App.toggleAsientoEdit('${a.id}')">${editando?"Cerrar":"Ver / editar"}</button>
+          <button class="icon-btn" onclick="App.removeAsiento('${a.id}')">${ICONS.trash}</button>
+        </td>
+      </tr>
+      ${editando ? `<tr><td colspan="6" style="padding:0;">
+        <div style="padding:14px 18px; background:var(--grey-bg);">
+          <div class="form-row" style="padding:0; border:none;">
+            <input class="input" id="asi-fecha" style="width:145px" type="date" value="${a.fecha}" />
+            <input class="input" id="asi-glosa" value="${esc(a.glosa)}" placeholder="Glosa" style="flex:2; min-width:220px" />
+          </div>
+          <div id="asiento-lines" style="margin-top:8px;">${asientoLinesInitialHTML(a.detalle)}</div>
+          <button class="link-btn" onclick="App.addAsientoLine()">+ Agregar linea</button>
+          <div class="fact-totals">
+            <div class="line">Debe <b class="num" id="asi-total-debe">₡0</b></div>
+            <div class="line">Haber <b class="num" id="asi-total-haber">₡0</b></div>
+            <div class="grand" id="asi-diferencia">Diferencia ₡0</div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+            <button class="add-btn" style="background:#fff; border:1px solid #DAD8CC; color:var(--muted);" onclick="App.toggleAsientoEdit('${a.id}')">Cancelar</button>
+            <button class="add-btn" style="background:#1F2E24; color:#fff;" onclick="App.guardarAsiento('${a.id}')">Guardar cambios</button>
+          </div>
+        </div>
+      </td></tr>` : ""}`;
+    }).join("");
+
+  return `
+    ${header("Asientos contables","Diario general. Los automaticos se generan al facturar o registrar abonos; puedes editarlos o crear asientos manuales")}
+    <div class="kpi-grid">
+      ${kpi("Asientos registrados", totalAsientos)}
+      ${kpi("Monto total movido", CRC(totalMovimiento))}
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="note">${totalAsientos} asiento${totalAsientos!==1?"s":""} en el diario</span>
+        <button class="add-btn" style="background:var(--green-bg); color:var(--green);" onclick="App.toggleAsientoForm()">${ICONS.plus} Nuevo asiento manual</button>
+      </div>
+      ${nuevoFormHTML}
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>No.</th><th>Fecha</th><th>Glosa</th><th>Tipo</th><th style="text-align:right">Monto</th><th></th></tr></thead>
+          <tbody>${rowsHTML}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ---------------- render: mayor ----------------
+function renderMayor(state){
+  const cuentasDetalle = state.cat.filter(c=>c.esDetalle).sort((a,b)=>a.codigo.localeCompare(b.codigo));
+  const resumenHTML = cuentasDetalle.map(c => {
+    const saldo = saldoCuenta(c.id, state);
+    return `<tr style="cursor:pointer;" onclick="App.verMayor('${c.id}')">
+      <td class="num">${esc(c.codigo)}</td>
+      <td>${esc(c.nombre)}</td>
+      <td><span class="badge badge-muted">${c.tipo}</span></td>
+      <td class="num" style="text-align:right; font-weight:600; ${saldo<0?'color:var(--red)':''}">${CRC(saldo)}</td>
+    </tr>`;
+  }).join("");
+
+  const cuentaSel = state.cat.find(c=>c.id===App.mayorCuentaId);
+  let detalleHTML = "";
+  if (cuentaSel){
+    const movs = [];
+    state.asi.forEach(a => {
+      a.detalle.forEach(l => {
+        if (l.cuentaId===cuentaSel.id) movs.push({fecha:a.fecha, numero:a.numero, glosa:a.glosa, debe:l.debe, haber:l.haber});
+      });
+    });
+    movs.sort((x,y)=> x.fecha.localeCompare(y.fecha) || x.numero.localeCompare(y.numero));
+    let saldoAcum = 0;
+    const filas = movs.map(m => {
+      saldoAcum += cuentaSel.naturaleza==="Deudora" ? (m.debe-m.haber) : (m.haber-m.debe);
+      return `<tr>
+        <td>${m.fecha}</td>
+        <td>${m.numero}</td>
+        <td>${esc(m.glosa)}</td>
+        <td class="num" style="text-align:right">${m.debe>0?CRC(m.debe):""}</td>
+        <td class="num" style="text-align:right">${m.haber>0?CRC(m.haber):""}</td>
+        <td class="num" style="text-align:right; font-weight:600">${CRC(saldoAcum)}</td>
+      </tr>`;
+    }).join("");
+    detalleHTML = `
+      <div class="panel">
+        <div class="panel-head">
+          <span class="note">Mayor de ${esc(cuentaSel.codigo)} - ${esc(cuentaSel.nombre)}</span>
+          <button class="icon-btn" onclick="App.verMayor(null)" style="border:1px solid #DAD8CC; border-radius:6px; width:26px; height:26px;">${ICONS.x}</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Fecha</th><th>Asiento</th><th>Glosa</th><th style="text-align:right">Debe</th><th style="text-align:right">Haber</th><th style="text-align:right">Saldo</th></tr></thead>
+            <tbody>${movs.length===0?`<tr><td colspan="6" class="empty-cell">Esta cuenta no tiene movimientos todavia.</td></tr>`:filas}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  return `
+    ${header("Mayor","Saldo y movimientos por cuenta, calculados a partir del diario de asientos")}
+    <div class="panel">
+      <div class="panel-head"><span class="note">Click en una cuenta para ver su detalle</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Codigo</th><th>Cuenta</th><th>Tipo</th><th style="text-align:right">Saldo</th></tr></thead>
+          <tbody>${resumenHTML}</tbody>
+        </table>
+      </div>
+    </div>
+    ${detalleHTML}
+  `;
+}
+
 // ---------------- render: facturas ----------------
 function facturaItemRowHTML(idx, state, tipo){
   return `
@@ -957,14 +1619,22 @@ function facturaItemRowHTML(idx, state, tipo){
 function onFacturaItemInput(idx){
   const nombre = (document.getElementById("fitem-nombre-"+idx).value||"").trim();
   const cant = Number(document.getElementById("fitem-cant-"+idx).value)||0;
-  const precio = Number(document.getElementById("fitem-precio-"+idx).value)||0;
-  document.getElementById("fitem-sub-"+idx).textContent = CRC(cant*precio);
+  const precioInput = document.getElementById("fitem-precio-"+idx);
   const hintEl = document.getElementById("fitem-hint-"+idx);
   if (App.facturaTipo==="venta" && nombre){
     const prod = App.state.inv.productos.find(p=>p.nombre.toLowerCase()===nombre.toLowerCase());
-    if (prod){ hintEl.textContent = "stock: "+prod.existencia; hintEl.style.color = prod.existencia>=cant ? "#2F6E4F" : "#A13D2E"; }
-    else { hintEl.textContent = "nuevo"; hintEl.style.color = "#B8860B"; }
-  } else { hintEl.textContent = ""; }
+    if (prod){
+      hintEl.textContent = "stock: "+prod.existencia;
+      hintEl.style.color = prod.existencia>=cant ? "#2F6E4F" : "#A13D2E";
+      if (precioInput && !precioInput.value){
+        precioInput.value = Math.round(precioVentaCalculado(prod, App.state.pre));
+      }
+    } else {
+      hintEl.textContent = "nuevo"; hintEl.style.color = "#B8860B";
+    }
+  } else if (hintEl){ hintEl.textContent = ""; }
+  const precio = Number(precioInput.value)||0;
+  document.getElementById("fitem-sub-"+idx).textContent = CRC(cant*precio);
   updateFacturaTotals();
 }
 function updateFacturaTotals(){
@@ -1042,7 +1712,7 @@ function renderFacturas(state){
             <option value="contado" ${condicionActual==='contado'?'selected':''}>Contado</option>
             <option value="credito" ${condicionActual==='credito'?'selected':''}>Credito</option>
           </select>
-          ${condicionActual==="credito" ? `<input class="input" id="fac-plazo" style="width:100px" type="number" placeholder="Plazo dias" value="15" />` : ""}
+          ${condicionActual==="credito" ? `<input class="input" id="fac-plazo" style="width:100px" type="number" placeholder="Plazo dias" value="15" />` : selectorBancoHTML('fac-banco', null, {placeholder:'Cuenta de pago...', style:'width:190px'})}
           <label class="checkbox-label"><input type="checkbox" id="fac-iva" /> IVA 13%</label>
         </div>
         ${datalist}
