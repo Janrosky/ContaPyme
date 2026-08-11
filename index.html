@@ -18,11 +18,14 @@
   body{margin:0; padding:24px; background:#EDEBE0;}
   .num{font-family:'Courier New',ui-monospace,monospace; font-variant-numeric:tabular-nums;}
   ::placeholder{color:#9CA79C;}
-  .app{display:flex; min-height:640px; background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; max-width:1180px; margin:0 auto;}
+  a, button{-webkit-tap-highlight-color:transparent;}
+  button, .nav-btn, .add-btn, .link-btn, .icon-btn, .seg-btn, .reset-btn{transition:background .15s ease, color .15s ease, opacity .15s ease, border-color .15s ease;}
+  button:focus-visible, .input:focus-visible, .input:focus{outline:2px solid var(--gold); outline-offset:1px;}
+  .app{display:flex; min-height:640px; background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; max-width:1180px; margin:0 auto; box-shadow:0 1px 3px rgba(28,43,34,.05), 0 12px 32px rgba(28,43,34,.06);}
   .sidebar{width:236px; background:var(--sidebar); padding:20px 14px; display:flex; flex-direction:column; gap:4px;}
   .brand{display:flex; align-items:center; gap:10px; padding:0 6px 20px;}
-  .brand-mark{width:34px; height:34px; border-radius:8px; background:var(--gold) url('ico.ico') center/cover no-repeat; color:var(--sidebar); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;}
-  .brand-title{color:var(--bg); font-weight:600; font-size:14.5px;}
+  .brand-mark{width:34px; height:34px; border-radius:8px; background:var(--gold) url('ico.ico') center/cover no-repeat; color:var(--sidebar); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:0 0 auto;}
+  .brand-title{color:var(--bg); font-weight:600; font-size:14.5px; letter-spacing:.01em;}
   .brand-sub{color:#8FA391; font-size:11px;}
   .nav{display:flex; flex-direction:column; gap:2px; flex:1;}
   .nav-btn{display:flex; align-items:center; gap:10px; padding:9px 10px; background:transparent; border:none; border-radius:7px; color:var(--sidebar-text); font-size:13.5px; text-align:left; cursor:pointer; width:100%;}
@@ -31,15 +34,26 @@
   .nav-btn svg{flex:0 0 auto;}
   .reset-btn{display:flex; align-items:center; justify-content:center; gap:6px; background:transparent; border:1px solid #3B4C3A; color:#8FA391; font-size:11.5px; padding:8px 10px; border-radius:7px; margin-top:10px; cursor:pointer;}
   .main{flex:1; padding:26px 28px; overflow-y:auto; max-height:90vh;}
-  h1.hd{font-size:21px; font-weight:600; color:var(--ink); margin:0; font-family:Georgia,'Times New Roman',serif;}
+  h1.hd{font-size:21px; font-weight:600; color:var(--ink); margin:0; font-family:Georgia,'Times New Roman',serif; letter-spacing:.01em;}
   p.sub{font-size:13.5px; color:var(--muted); margin:4px 0 0;}
   .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:20px;}
-  .kpi{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px 16px;}
+  .kpi{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px 16px; box-shadow:0 1px 2px rgba(28,43,34,.04);}
   .kpi .lbl{font-size:12px; color:var(--faint);}
   .kpi .val{font-size:20px; font-weight:600; margin-top:4px; color:var(--ink);}
-  .panel{background:var(--panel); border:1px solid var(--border); border-radius:10px; margin-bottom:18px; overflow:hidden;}
+  .panel{background:var(--panel); border:1px solid var(--border); border-radius:10px; margin-bottom:18px; overflow:hidden; box-shadow:0 1px 2px rgba(28,43,34,.04);}
   .panel-head{display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-bottom:1px solid var(--border2); gap:10px; flex-wrap:wrap;}
   .panel-head .note{font-size:13px; color:var(--muted);}
+  .stmt-body{padding:16px 18px;}
+  .stmt-h{font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); margin:18px 0 6px;}
+  .stmt-h:first-child{margin-top:0;}
+  .stmt-line{display:flex; justify-content:space-between; padding:3px 0; font-size:13.5px; color:var(--ink);}
+  .stmt-line .num{color:var(--muted);}
+  .stmt-empty{padding:6px 0; font-size:12.5px; color:var(--faint);}
+  .stmt-total{display:flex; justify-content:space-between; padding:8px 0; margin-top:4px; border-top:1px solid var(--border2); font-size:14px; font-weight:600;}
+  .stmt-total.big{font-size:16px; margin-top:10px; border-top:2px solid var(--border2); padding-top:10px;}
+  .stmt-toggle{display:flex; gap:6px; padding:14px 18px 0;}
+  .stmt-toggle button{border:1px solid #DAD8CC; background:#fff; border-radius:7px; padding:7px 14px; font-size:12.5px; font-weight:600; cursor:pointer; color:var(--muted);}
+  .stmt-toggle button.active{background:#1F2E24; color:#fff; border-color:#1F2E24;}
   .add-btn{display:flex; align-items:center; gap:6px; border:none; border-radius:7px; padding:7px 12px; font-size:12.5px; font-weight:600; cursor:pointer;}
   .form-row{display:flex; flex-wrap:wrap; gap:8px; padding:14px 18px; border-bottom:1px solid var(--border2); align-items:center;}
   .input{height:34px; border:1px solid #DAD8CC; border-radius:6px; padding:0 10px; font-size:13px; background:#FBFAF6; flex:1; min-width:100px;}
@@ -86,17 +100,110 @@
   .bar-track{height:8px; background:var(--border2); border-radius:4px; overflow:hidden;}
   .bar-fill{height:100%; border-radius:4px;}
   .storage-note{font-size:11px; color:#8FA391; padding:8px 10px 0; line-height:1.4;}
+
+  /* ---------------- navegacion movil (hamburguesa + cajon) ---------------- */
+  .mobile-topbar{display:none;}
+  .nav-backdrop{display:none;}
+  .nav-close-btn{display:none;}
+
+  @media (max-width:860px){
+    body{padding:0; background:var(--sidebar);}
+    .app{flex-direction:column; border-radius:0; border:none; max-width:100%; min-height:100vh; box-shadow:none;}
+
+    .mobile-topbar{
+      display:flex; align-items:center; gap:10px; padding:12px 14px;
+      background:var(--sidebar); position:sticky; top:0; z-index:30;
+      border-bottom:1px solid #2B3A2A;
+    }
+    .hamburger-btn{
+      background:transparent; border:1px solid #3B4C3A; color:var(--bg);
+      display:flex; align-items:center; justify-content:center;
+      width:38px; height:38px; border-radius:8px; cursor:pointer; flex:0 0 auto; padding:0;
+    }
+    .hamburger-btn:active{background:#28352A;}
+    .mobile-brand{color:var(--bg); font-weight:600; font-size:14.5px; display:flex; align-items:center; gap:8px; flex:1; min-width:0;}
+    .mobile-brand .brand-mark{width:26px; height:26px; border-radius:6px;}
+    .mobile-tab-label{color:#8FA391; font-size:11.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+    .sidebar{
+      position:fixed; top:0; left:0; height:100dvh; width:82vw; max-width:300px;
+      transform:translateX(-100%); transition:transform .28s ease; z-index:50;
+      box-shadow:24px 0 48px rgba(10,16,10,.35); overflow-y:auto; padding-top:16px;
+    }
+    body.nav-open .sidebar{transform:translateX(0);}
+    body.nav-open{overflow:hidden;}
+    .nav-backdrop{
+      display:block; position:fixed; inset:0; background:rgba(10,14,10,.55);
+      opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:40;
+    }
+    body.nav-open .nav-backdrop{opacity:1; pointer-events:auto;}
+    .nav-close-btn{
+      display:flex; align-items:center; gap:8px; background:transparent; border:none;
+      color:#8FA391; font-size:12px; padding:8px 6px; margin:0 0 6px; cursor:pointer; width:100%;
+    }
+
+    .main{padding:16px; max-height:none; overflow-y:visible;}
+    h1.hd{font-size:18.5px;}
+    p.sub{font-size:12.5px;}
+    .kpi-grid{grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:16px;}
+    .kpi{padding:11px 12px; border-radius:9px;}
+    .kpi .val{font-size:17px;}
+    .panel{border-radius:10px; margin-bottom:14px;}
+    .panel-head{padding:11px 14px;}
+    .form-row{padding:12px 14px; gap:8px;}
+    .input, select.input{font-size:16px; height:40px; min-width:0; flex:1 1 100%;}
+    .form-row .checkbox-label{flex:1 1 100%;}
+    .form-row > button.add-btn{flex:1 1 100%; justify-content:center; height:40px;}
+    th, td{padding:9px 12px; font-size:12.5px;}
+    .table-wrap{-webkit-overflow-scrolling:touch;}
+    .icon-btn{padding:8px;}
+    .link-btn{padding:6px 0;}
+    .print-overlay{padding:0;}
+    .print-box{border-radius:0; min-height:100vh;}
+
+    .fact-item-row{flex-wrap:wrap; gap:6px; padding-bottom:8px; border-bottom:1px dashed var(--border2);}
+    .fact-item-row select.input{flex:1 1 100% !important; min-width:0 !important;}
+    .fact-item-row > input.input{flex:1 1 100%; min-width:0;}
+    .fact-item-row .qty{flex:1 1 47%; width:auto;}
+    .fact-item-row .price{flex:1 1 47%; width:auto;}
+    .fact-item-row .sub{flex:1 1 auto; width:auto; text-align:left;}
+    .fact-item-row .hint{flex:0 0 auto;}
+
+    .fact-totals{flex-wrap:wrap; gap:8px 20px; justify-content:flex-start;}
+    .stmt-toggle{flex-wrap:wrap;}
+    .stmt-toggle button{flex:1 1 auto;}
+    .segmented{width:100%;}
+    .seg-btn{flex:1;}
+  }
+  @media (max-width:400px){
+    .kpi-grid{grid-template-columns:1fr 1fr;}
+    .mobile-tab-label{display:none;}
+  }
   @media print{
     .no-print{display:none !important;}
     .print-overlay{position:static !important; background:#fff !important; padding:0 !important;}
     .print-box{box-shadow:none !important; border:none !important; width:100% !important; max-width:100% !important;}
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
 <div class="app">
+  <div class="mobile-topbar no-print">
+    <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Abrir menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-brand">
+      ContaPyme <span class="mobile-tab-label" id="mobileTabLabel"></span>
+    </div>
+  </div>
+  <div class="nav-backdrop no-print" onclick="toggleMobileNav()"></div>
   <aside class="sidebar no-print">
+    <button class="nav-close-btn no-print" onclick="toggleMobileNav()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Cerrar menu
+    </button>
     <div class="brand">
       <div class="brand-mark"></div>
       <div>
@@ -105,6 +212,7 @@
       </div>
     </div>
     <nav class="nav" id="nav"></nav>
+    <button class="reset-btn" style="border-color:var(--gold); color:#D9C066;" onclick="exportarRespaldoExcel()">⬇ Respaldar todo a Excel</button>
     <button class="reset-btn" onclick="App.resetAll()">↺ Reiniciar datos de ejemplo</button>
     <button class="reset-btn" onclick="App.clearAll()">🗑 Borrar datos de ejemplo</button>
     <div class="storage-note">Los datos se guardan en el localStorage de este navegador. <br> Si abres el archivo en otro equipo o navegador, no se veran los mismos datos. <br> App desarrollada por Alejandro Chacón</div>
@@ -122,6 +230,7 @@ const daysBetween = (a,b) => Math.round((new Date(b) - new Date(a)) / 86400000);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const pad4 = (n) => String(n).padStart(4,"0");
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toggleMobileNav(){ document.body.classList.toggle("nav-open"); }
 
 const ICONS = {
   dashboard:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>',
@@ -145,6 +254,7 @@ const ICONS = {
   book:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><line x1="9" y1="7" x2="15" y2="7"/></svg>',
   journal:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="17" y2="13"/><line x1="7" y1="17" x2="13" y2="17"/></svg>',
   layers:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+  chart:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="12" width="3" height="8"/><rect x="14.5" y="8" width="3" height="12"/><rect x="10.25" y="4" width="3" height="16"/></svg>',
 };
 
 const KEYS = {
@@ -181,10 +291,10 @@ const DEFAULTS = {
     movimientos:[],
   },
   pla:{
-    config:{obrero:0.1083, patronal:0.38, aguinaldo:0.0833},
+    config:{obrero:0.1083, patronal:0.38, aguinaldo:0.0833, factorHoraExtra:1.5},
     empleados:[
-      {id:uid(), nombre:"Oficinista", salarioMensual:373000, diasTrabajados:30},
-      {id:uid(), nombre:"Vendedor", salarioMensual:405000, diasTrabajados:30},
+      {id:uid(), nombre:"Oficinista", salarioMensual:373000, diasTrabajados:30, horasExtra:0},
+      {id:uid(), nombre:"Vendedor", salarioMensual:405000, diasTrabajados:30, horasExtra:0},
     ],
   },
   pre:{
@@ -250,6 +360,7 @@ const TABS = [
   {id:"cat", label:"Catalogo contable", icon:"book"},
   {id:"asi", label:"Asientos", icon:"journal"},
   {id:"may", label:"Mayor", icon:"layers"},
+  {id:"efi", label:"Estados financieros", icon:"chart"},
 ];
 
 // ---------------- estado + persistencia ----------------
@@ -287,10 +398,14 @@ const App = {
   asientoEditId: null,
   asientoLineIdx: 1,
   mayorCuentaId: null,
+  efiVista: "resultados",
+  efiDesde: "",
+  efiHasta: "",
+  efiFecha: "",
 
   init(){ this.render(); },
 
-  goto(tab){ this.tab = tab; this.facturaAvisos=[]; this.facturaOk=""; this.render(); },
+  goto(tab){ this.tab = tab; this.facturaAvisos=[]; this.facturaOk=""; document.body.classList.remove("nav-open"); this.render(); },
 
   resetAll(){
     if (!confirm("¿Restaurar los datos de ejemplo? Se perderan los cambios guardados.")) return;
@@ -316,6 +431,11 @@ const App = {
     document.getElementById("nav").innerHTML = TABS.map(t =>
       `<button class="nav-btn ${this.tab===t.id?'active':''}" onclick="App.goto('${t.id}')">${ICONS[t.icon]}${t.label}</button>`
     ).join("");
+    const mobileLabel = document.getElementById("mobileTabLabel");
+    if (mobileLabel){
+      const t = TABS.find(t=>t.id===this.tab);
+      mobileLabel.textContent = t ? "· " + t.label : "";
+    }
 
     const main = document.getElementById("main");
     if (this.tab==="resumen") main.innerHTML = renderResumen(this.state);
@@ -332,6 +452,7 @@ const App = {
     else if (this.tab==="cat") main.innerHTML = renderCatalogo(this.state);
     else if (this.tab==="asi") main.innerHTML = renderAsientos(this.state);
     else if (this.tab==="may") main.innerHTML = renderMayor(this.state);
+    else if (this.tab==="efi") main.innerHTML = renderEstados(this.state);
 
     if (this.tab==="fac") wireFacturaLiveUpdates();
     if (this.tab==="asi") onAsientoLineInput();
@@ -540,13 +661,19 @@ const App = {
     const nombre = document.getElementById("pla-nombre").value.trim();
     const salarioMensual = Number(document.getElementById("pla-salario").value);
     const diasTrabajados = Number(document.getElementById("pla-dias").value) || 30;
+    const horasExtra = Number(document.getElementById("pla-horas-extra").value) || 0;
     if (!nombre || !salarioMensual) { alert("Completa nombre y salario."); return; }
-    saveKey("pla", {...this.state.pla, empleados:[...this.state.pla.empleados, {id:uid(), nombre, salarioMensual, diasTrabajados}]});
+    saveKey("pla", {...this.state.pla, empleados:[...this.state.pla.empleados, {id:uid(), nombre, salarioMensual, diasTrabajados, horasExtra}]});
     this.render();
   },
   removeEmpleado(id){
     if (!confirm("¿Eliminar este empleado?")) return;
     saveKey("pla", {...this.state.pla, empleados: this.state.pla.empleados.filter(e=>e.id!==id)});
+    this.render();
+  },
+  setEmpleadoHoras(id, horasStr){
+    const horasExtra = Number(horasStr) || 0;
+    saveKey("pla", {...this.state.pla, empleados: this.state.pla.empleados.map(e => e.id===id ? {...e, horasExtra} : e)});
     this.render();
   },
 
@@ -643,6 +770,10 @@ const App = {
 
   // ---- mayor ----
   verMayor(id){ this.mayorCuentaId = id; this.render(); },
+
+  // ---- estados financieros ----
+  setEfiVista(v){ this.efiVista = v; this.render(); },
+  setEfiFiltro(field, value){ this[field] = value; this.render(); },
 
   // ---- facturas ----
   setFacturaTipo(tipo){ this.facturaTipo = tipo; this.facturaAvisos=[]; this.facturaOk=""; this.render(); },
@@ -819,15 +950,22 @@ function cuentaLabel(cuentaId){
   const c = App.state.cat.find(x=>x.id===cuentaId);
   return c ? `${c.codigo} - ${c.nombre}` : "—";
 }
-// saldo (debe-haber, segun naturaleza) de una cuenta a partir de los asientos contables
-function saldoCuenta(cuentaId, state){
+// saldo (debe-haber, segun naturaleza) de una cuenta a partir de los asientos contables.
+// Si se pasa "asientos", se usa esa lista filtrada; si no, se usa el diario completo del estado.
+function saldoCuenta(cuentaId, state, asientos){
   const cuenta = state.cat.find(c=>c.id===cuentaId);
   if (!cuenta) return 0;
   let debe = 0, haber = 0;
-  (state.asi||[]).forEach(a => a.detalle.forEach(l => {
+  (asientos || state.asi || []).forEach(a => a.detalle.forEach(l => {
     if (l.cuentaId===cuentaId){ debe += Number(l.debe)||0; haber += Number(l.haber)||0; }
   }));
   return cuenta.naturaleza==="Deudora" ? (debe-haber) : (haber-debe);
+}
+function saldosPorTipo(tipo, state, asientos){
+  return state.cat.filter(c=>c.esDetalle && c.tipo===tipo)
+    .map(c=>({cuenta:c, saldo: saldoCuenta(c.id, state, asientos)}))
+    .filter(x=>Math.round(x.saldo*100)!==0)
+    .sort((a,b)=>a.cuenta.codigo.localeCompare(b.cuenta.codigo));
 }
 function saldoBanco(banco, state){
   return (Number(banco.saldoInicial)||0) + saldoCuenta(banco.cuentaId, state);
@@ -1184,18 +1322,32 @@ function renderPlanillas(pla){
   const {config, empleados} = pla;
   const calc = empleados.map(e=>{
     const diario = e.salarioMensual/30;
-    const bruto = diario*e.diasTrabajados;
+    const horaOrdinaria = diario/8;
+    const horaExtra = horaOrdinaria * config.factorHoraExtra;
+    const salarioGanado = diario*e.diasTrabajados;
+    const extraGanado = horaExtra*(e.horasExtra||0);
+    const bruto = salarioGanado + extraGanado;
     const ccssObrero = bruto*config.obrero;
     const neto = bruto-ccssObrero;
     const ccssPatronal = bruto*config.patronal;
     const aguinaldo = bruto*config.aguinaldo;
-    return {...e, bruto, ccssObrero, neto, ccssPatronal, aguinaldo};
+    return {...e, diario, horaOrdinaria, horaExtra, salarioGanado, extraGanado, bruto, ccssObrero, neto, ccssPatronal, aguinaldo};
   });
-  const tot = calc.reduce((a,e)=>({bruto:a.bruto+e.bruto, neto:a.neto+e.neto, ccssPatronal:a.ccssPatronal+e.ccssPatronal, aguinaldo:a.aguinaldo+e.aguinaldo}), {bruto:0,neto:0,ccssPatronal:0,aguinaldo:0});
+  const tot = calc.reduce((a,e)=>({
+    salarioGanado:a.salarioGanado+e.salarioGanado, extraGanado:a.extraGanado+e.extraGanado, bruto:a.bruto+e.bruto,
+    neto:a.neto+e.neto, ccssPatronal:a.ccssPatronal+e.ccssPatronal, aguinaldo:a.aguinaldo+e.aguinaldo,
+  }), {salarioGanado:0, extraGanado:0, bruto:0, neto:0, ccssPatronal:0, aguinaldo:0});
   const rowsHTML = calc.map(e => `
     <tr>
       <td>${esc(e.nombre)}</td>
-      <td class="num" style="text-align:right">${CRC(e.bruto)}</td>
+      <td class="num" style="text-align:right; color:var(--muted)">${CRC(e.horaExtra)}</td>
+      <td class="num" style="text-align:right">${e.diasTrabajados}d</td>
+      <td style="width:90px">
+        <input class="input" style="width:80px; text-align:right;" type="number" min="0" step="0.5" value="${e.horasExtra||0}"
+          onchange="App.setEmpleadoHoras('${e.id}', this.value)" />
+      </td>
+      <td class="num" style="text-align:right; color:var(--muted)">${CRC(e.extraGanado)}</td>
+      <td class="num" style="text-align:right; font-weight:600">${CRC(e.bruto)}</td>
       <td class="num" style="text-align:right; color:var(--red)">-${CRC(e.ccssObrero)}</td>
       <td class="num" style="text-align:right; font-weight:600">${CRC(e.neto)}</td>
       <td class="num" style="text-align:right; color:var(--muted)">${CRC(e.ccssPatronal)}</td>
@@ -1203,34 +1355,51 @@ function renderPlanillas(pla){
     </tr>`).join("");
 
   return `
-    ${header("Planillas","Los porcentajes de CCSS y aguinaldo son editables para ajustarlos si la ley cambia")}
+    ${header("Planillas","Los porcentajes de CCSS, aguinaldo y el recargo de hora extra son editables para ajustarlos si la ley cambia")}
     <div class="panel">
       <div class="panel-head"><span class="note">Porcentajes de ley</span></div>
       <div class="form-row">
         ${pctInput("CCSS obrero", config.obrero, "App.setPlaConfig('obrero', this.value)")}
         ${pctInput("Cargas sociales patronales", config.patronal, "App.setPlaConfig('patronal', this.value)")}
         ${pctInput("Provision de aguinaldo", config.aguinaldo, "App.setPlaConfig('aguinaldo', this.value)")}
+        ${pctInput("Recargo por hora extra", config.factorHoraExtra, "App.setPlaConfig('factorHoraExtra', this.value)")}
       </div>
     </div>
     <div class="kpi-grid">
+      ${kpi("Salario ordinario total", CRC(tot.salarioGanado))}
+      ${kpi("Horas extra pagadas", CRC(tot.extraGanado), tot.extraGanado>0?"#B8860B":null)}
       ${kpi("Salario bruto total", CRC(tot.bruto))}
       ${kpi("Neto a pagar", CRC(tot.neto))}
       ${kpi("Cargas patronales", CRC(tot.ccssPatronal))}
       ${kpi("Provision aguinaldo", CRC(tot.aguinaldo))}
     </div>
     <div class="panel">
+      <div class="panel-head"><span class="note">Nuevo empleado. El salario por hora se calcula como salario mensual / 30 / 8, y la hora extra paga ${(config.factorHoraExtra*100).toFixed(0)}% de esa hora</span></div>
       <div class="form-row">
         <input class="input" id="pla-nombre" placeholder="Nombre / puesto" />
         <input class="input" id="pla-salario" style="width:150px" type="number" placeholder="Salario mensual" />
         <input class="input" id="pla-dias" style="width:110px" type="number" placeholder="Dias trabajados" value="30" />
+        <input class="input" id="pla-horas-extra" style="width:130px" type="number" min="0" step="0.5" placeholder="Horas extra" value="0" />
         <button class="add-btn" style="background:var(--green-bg); color:var(--green);" onclick="App.addEmpleado()">${ICONS.plus} Agregar</button>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Nombre</th><th style="text-align:right">Bruto</th><th style="text-align:right">CCSS obrero</th><th style="text-align:right">Neto</th><th style="text-align:right">Cargas patronales</th><th></th></tr></thead>
+          <thead><tr>
+            <th>Nombre</th>
+            <th style="text-align:right">Salario x hora extra</th>
+            <th style="text-align:right">Dias trab.</th>
+            <th>Horas extra</th>
+            <th style="text-align:right">Extra ganado</th>
+            <th style="text-align:right">Bruto</th>
+            <th style="text-align:right">CCSS obrero</th>
+            <th style="text-align:right">Neto</th>
+            <th style="text-align:right">Cargas patronales</th>
+            <th></th>
+          </tr></thead>
           <tbody>${rowsHTML}</tbody>
         </table>
       </div>
+      <div class="storage-note" style="padding:10px 18px 14px;">Las horas extra se pueden editar directamente en la tabla; el resto de la planilla se recalcula solo.</div>
     </div>
   `;
 }
@@ -1604,6 +1773,110 @@ function renderMayor(state){
   `;
 }
 
+// ---------------- render: estados financieros ----------------
+function renderEstados(state){
+  const vista = App.efiVista || "resultados";
+  const desde = App.efiDesde, hasta = App.efiHasta;
+  const fechaCorte = App.efiFecha || todayISO();
+
+  const asiPeriodo = state.asi.filter(a => (!desde || a.fecha>=desde) && (!hasta || a.fecha<=hasta));
+  const asiCorte = state.asi.filter(a => a.fecha<=fechaCorte);
+
+  const toggleHTML = `
+    <div class="stmt-toggle">
+      <button class="${vista==='resultados'?'active':''}" onclick="App.setEfiVista('resultados')">Estado de resultados</button>
+      <button class="${vista==='situacion'?'active':''}" onclick="App.setEfiVista('situacion')">Estado de situacion financiera</button>
+    </div>`;
+
+  let bodyHTML = "";
+
+  if (vista==="resultados"){
+    const ingresos = saldosPorTipo("Ingreso", state, asiPeriodo);
+    const costos = saldosPorTipo("Costo", state, asiPeriodo);
+    const gastos = saldosPorTipo("Gasto", state, asiPeriodo);
+    const totalIngresos = ingresos.reduce((s,x)=>s+x.saldo,0);
+    const totalCostos = costos.reduce((s,x)=>s+x.saldo,0);
+    const utilidadBruta = totalIngresos - totalCostos;
+    const totalGastos = gastos.reduce((s,x)=>s+x.saldo,0);
+    const utilidadNeta = utilidadBruta - totalGastos;
+    const linea = x => `<div class="stmt-line"><span>${esc(x.cuenta.codigo)} - ${esc(x.cuenta.nombre)}</span><span class="num">${CRC(x.saldo)}</span></div>`;
+
+    bodyHTML = `
+      <div class="panel">
+        <div class="panel-head">
+          <span class="note">Estado de resultados (tambien llamado estado de perdidas y ganancias). Filtra por periodo, o dejalo vacio para ver todo el historico</span>
+          <div style="display:flex; gap:8px;">
+            <input class="input" type="date" style="width:150px" value="${desde}" onchange="App.setEfiFiltro('efiDesde', this.value)" title="Desde" />
+            <input class="input" type="date" style="width:150px" value="${hasta}" onchange="App.setEfiFiltro('efiHasta', this.value)" title="Hasta" />
+          </div>
+        </div>
+        <div class="stmt-body">
+          <div class="stmt-h">Ingresos</div>
+          ${ingresos.length ? ingresos.map(linea).join("") : `<div class="stmt-empty">Sin movimientos en el periodo</div>`}
+          <div class="stmt-total"><span>Total ingresos</span><span>${CRC(totalIngresos)}</span></div>
+
+          <div class="stmt-h">Costo de ventas</div>
+          ${costos.length ? costos.map(linea).join("") : `<div class="stmt-empty">Sin movimientos en el periodo</div>`}
+          <div class="stmt-total"><span>Utilidad bruta</span><span>${CRC(utilidadBruta)}</span></div>
+
+          <div class="stmt-h">Gastos</div>
+          ${gastos.length ? gastos.map(linea).join("") : `<div class="stmt-empty">Sin movimientos en el periodo</div>`}
+          <div class="stmt-total big"><span>Utilidad neta del periodo</span><span style="color:${utilidadNeta<0?'var(--red)':'var(--green)'}">${CRC(utilidadNeta)}</span></div>
+        </div>
+      </div>`;
+  } else {
+    const activos = saldosPorTipo("Activo", state, asiCorte);
+    const pasivos = saldosPorTipo("Pasivo", state, asiCorte);
+    const patrimonios = saldosPorTipo("Patrimonio", state, asiCorte);
+    const totalActivo = activos.reduce((s,x)=>s+x.saldo,0);
+    const totalPasivo = pasivos.reduce((s,x)=>s+x.saldo,0);
+    const totalPatrimonioCuentas = patrimonios.reduce((s,x)=>s+x.saldo,0);
+    const ingresosCorte = saldosPorTipo("Ingreso", state, asiCorte).reduce((s,x)=>s+x.saldo,0);
+    const costosCorte = saldosPorTipo("Costo", state, asiCorte).reduce((s,x)=>s+x.saldo,0);
+    const gastosCorte = saldosPorTipo("Gasto", state, asiCorte).reduce((s,x)=>s+x.saldo,0);
+    const utilidadEjercicio = ingresosCorte - costosCorte - gastosCorte;
+    const totalPatrimonio = totalPatrimonioCuentas + utilidadEjercicio;
+    const totalPasivoPatrimonio = totalPasivo + totalPatrimonio;
+    const diferencia = Math.round((totalActivo - totalPasivoPatrimonio)*100)/100;
+    const linea = x => `<div class="stmt-line"><span>${esc(x.cuenta.codigo)} - ${esc(x.cuenta.nombre)}</span><span class="num">${CRC(x.saldo)}</span></div>`;
+
+    bodyHTML = `
+      <div class="panel">
+        <div class="panel-head">
+          <span class="note">Estado de situacion financiera (balance general), a una fecha de corte</span>
+          <input class="input" type="date" style="width:150px" value="${fechaCorte}" onchange="App.setEfiFiltro('efiFecha', this.value)" title="A fecha" />
+        </div>
+        <div class="stmt-body">
+          <div class="stmt-h">Activo</div>
+          ${activos.length ? activos.map(linea).join("") : `<div class="stmt-empty">Sin movimientos</div>`}
+          <div class="stmt-total"><span>Total activo</span><span>${CRC(totalActivo)}</span></div>
+
+          <div class="stmt-h">Pasivo</div>
+          ${pasivos.length ? pasivos.map(linea).join("") : `<div class="stmt-empty">Sin movimientos</div>`}
+          <div class="stmt-total"><span>Total pasivo</span><span>${CRC(totalPasivo)}</span></div>
+
+          <div class="stmt-h">Patrimonio</div>
+          ${patrimonios.length ? patrimonios.map(linea).join("") : `<div class="stmt-empty">Sin movimientos</div>`}
+          <div class="stmt-line"><span>Utilidad del ejercicio (acumulada a la fecha)</span><span class="num">${CRC(utilidadEjercicio)}</span></div>
+          <div class="stmt-total"><span>Total patrimonio</span><span>${CRC(totalPatrimonio)}</span></div>
+
+          <div class="stmt-total big"><span>Total pasivo + patrimonio</span><span>${CRC(totalPasivoPatrimonio)}</span></div>
+        </div>
+      </div>
+      <div class="panel" style="padding:14px 18px; ${Math.abs(diferencia)<1 ? '' : 'border-color:var(--red);'}">
+        ${Math.abs(diferencia)<1
+          ? `<span style="color:var(--green); font-weight:600;">✓ El balance cuadra: Activo = Pasivo + Patrimonio</span>`
+          : `<span style="color:var(--red); font-weight:600;">⚠ El balance no cuadra. Diferencia: ${CRC(diferencia)}. Revisa que todos los asientos esten bien clasificados en el catalogo (Activo/Pasivo/Patrimonio/Ingreso/Costo/Gasto).</span>`}
+      </div>`;
+  }
+
+  return `
+    ${header("Estados financieros","Calculados automaticamente a partir del diario de asientos")}
+    <div class="panel">${toggleHTML}<div style="height:14px;"></div></div>
+    ${bodyHTML}
+  `;
+}
+
 // ---------------- render: facturas ----------------
 function facturaItemRowHTML(idx, state, tipo){
   return `
@@ -1809,6 +2082,149 @@ function header(title, subtitle){
 }
 function kpi(label, value, color){
   return `<div class="kpi"><div class="lbl">${esc(label)}</div><div class="val num" style="${color?`color:${color};`:""}">${value}</div></div>`;
+}
+
+// ---------------- respaldo a Excel ----------------
+function exportarRespaldoExcel(){
+  if (typeof XLSX === "undefined"){
+    alert("No se pudo cargar la libreria de Excel (se necesita conexion a internet la primera vez). Verifica tu conexion e intenta de nuevo.");
+    return;
+  }
+  const state = App.state;
+  const wb = XLSX.utils.book_new();
+  const addSheet = (name, rows) => {
+    const ws = XLSX.utils.json_to_sheet(rows && rows.length ? rows : [{"Sin datos":""}]);
+    XLSX.utils.book_append_sheet(wb, ws, name.slice(0,31));
+  };
+
+  addSheet("Clientes", state.cli.map(c => ({
+    Nombre:c.nombre, Identificacion:c.identificacion||"", Telefono:c.telefono||"", Correo:c.email||"",
+    "Cuenta contable": cuentaLabel(c.cuentaId),
+  })));
+
+  addSheet("Proveedores", state.prov.map(p => ({
+    Nombre:p.nombre, Identificacion:p.identificacion||"", Telefono:p.telefono||"", Correo:p.email||"",
+    "Cuenta contable": cuentaLabel(p.cuentaId),
+  })));
+
+  addSheet("Facturas", state.fac.map(f => ({
+    Numero:f.numero, Tipo:f.tipo==="venta"?"Venta":"Compra", Contraparte:f.contraparte, Identificacion:f.identificacion||"",
+    Fecha:f.fecha, Condicion:f.condicion==="contado"?"Contado":"Credito", "Plazo dias":f.plazoDias||0,
+    "Incluye IVA":f.incluirIva?"Si":"No", Subtotal:Math.round(f.subtotal), IVA:Math.round(f.iva), Total:Math.round(f.total),
+  })));
+
+  const facDetalle = [];
+  state.fac.forEach(f => (f.items||[]).forEach(it => facDetalle.push({
+    Factura:f.numero, Tipo:f.tipo==="venta"?"Venta":"Compra", Fecha:f.fecha, Producto:it.nombre,
+    Cantidad:it.cantidad, "Precio unitario":Math.round(it.precioUnitario), Subtotal:Math.round(it.subtotal),
+  })));
+  addSheet("Facturas - Detalle", facDetalle);
+
+  addSheet("Cuentas por cobrar", state.cxc.map(r => ({
+    Cliente:r.nombre, Identificacion:r.identificacion||"", Factura:r.factura||"", Fecha:r.fecha, "Plazo dias":r.plazoDias||0,
+    Monto:Math.round(r.monto), Abonado:Math.round(r.abonado||0), Saldo:Math.round(r.monto-(r.abonado||0)),
+    "Cuenta contable": cuentaLabel(r.cuentaId),
+  })));
+
+  addSheet("Cuentas por pagar", state.cxp.map(r => ({
+    Proveedor:r.nombre, Identificacion:r.identificacion||"", Factura:r.factura||"", Fecha:r.fecha, "Plazo dias":r.plazoDias||0,
+    Monto:Math.round(r.monto), Abonado:Math.round(r.abonado||0), Saldo:Math.round(r.monto-(r.abonado||0)),
+    "Cuenta contable": cuentaLabel(r.cuentaId),
+  })));
+
+  addSheet("Inventario", state.inv.productos.map(p => ({
+    Codigo:p.codigo, Producto:p.nombre, Existencia:p.existencia, "Costo unitario":Math.round(p.costoUnitario),
+    "Valor total":Math.round(p.existencia*p.costoUnitario),
+    "Precio de venta sugerido": Math.round(precioVentaCalculado(p, state.pre)),
+    "Cuenta inventario": cuentaLabel(p.cuentaInventarioId), "Cuenta venta": cuentaLabel(p.cuentaVentaId), "Cuenta costo": cuentaLabel(p.cuentaCostoId),
+  })));
+
+  addSheet("Movimientos inventario", state.inv.movimientos.map(m => ({
+    Fecha:m.fecha, Producto:m.producto, Tipo:m.tipo==="entrada"?"Entrada":"Salida", Cantidad:m.cantidad,
+    "Costo unitario":Math.round(m.costoUnitario), Factura:m.factura||"", Proveedor:m.proveedor||"",
+  })));
+
+  const cfgPla = state.pla.config;
+  addSheet("Planillas", state.pla.empleados.map(e => {
+    const diario = e.salarioMensual/30, horaOrd = diario/8, horaExtra = horaOrd*cfgPla.factorHoraExtra;
+    const salarioGanado = diario*e.diasTrabajados, extraGanado = horaExtra*(e.horasExtra||0);
+    const bruto = salarioGanado+extraGanado, ccssObrero = bruto*cfgPla.obrero, neto = bruto-ccssObrero;
+    const ccssPatronal = bruto*cfgPla.patronal, aguinaldo = bruto*cfgPla.aguinaldo;
+    return {
+      Nombre:e.nombre, "Salario mensual":e.salarioMensual, "Dias trabajados":e.diasTrabajados, "Horas extra":e.horasExtra||0,
+      "Salario diario":Math.round(diario), "Salario x hora":Math.round(horaOrd), "Salario x hora extra":Math.round(horaExtra),
+      "Salario ganado":Math.round(salarioGanado), "Extra ganado":Math.round(extraGanado), "Salario bruto":Math.round(bruto),
+      "CCSS obrero":Math.round(ccssObrero), "Salario neto":Math.round(neto), "CCSS patronal":Math.round(ccssPatronal), "Aguinaldo":Math.round(aguinaldo),
+    };
+  }));
+
+  addSheet("Precio de venta", state.inv.productos.map(p => ({
+    Producto:p.nombre, Costo:Math.round(p.costoUnitario),
+    "+Indirectos": Math.round(p.costoUnitario*state.pre.pctIndirectos),
+    "+Fijos": Math.round(p.costoUnitario*state.pre.pctFijos),
+    "+Utilidad": Math.round(p.costoUnitario*state.pre.pctUtilidad),
+    "Precio de venta": Math.round(precioVentaCalculado(p, state.pre)),
+  })));
+
+  addSheet("Depreciacion", state.dep.map(a => {
+    const meses = Math.min(daysBetween(a.fechaCompra, todayISO())/30, a.vidaUtilMeses);
+    const mesesTranscurridos = Math.max(0, Math.floor(meses));
+    const mensual = a.costoHistorico/a.vidaUtilMeses;
+    const acumulada = mensual*mesesTranscurridos;
+    return {
+      Categoria:a.categoria, Descripcion:a.descripcion, "Fecha compra":a.fechaCompra, "Vida util (meses)":a.vidaUtilMeses,
+      "Costo historico":Math.round(a.costoHistorico), "Depreciacion mensual":Math.round(mensual),
+      "Depreciacion acumulada":Math.round(acumulada), "Valor en libros":Math.round(a.costoHistorico-acumulada),
+    };
+  }));
+
+  addSheet("Catalogo de cuentas", [...state.cat].sort((a,b)=>a.codigo.localeCompare(b.codigo)).map(c => ({
+    Codigo:c.codigo, Nombre:c.nombre, Tipo:c.tipo, Naturaleza:c.naturaleza,
+    "Cuenta padre": c.padreId ? cuentaLabel(c.padreId) : "", Nivel: c.esDetalle?"Detalle":"Mayor",
+  })));
+
+  addSheet("Bancos", state.ban.map(b => ({
+    Nombre:b.nombre, Tipo:b.tipo, "No. cuenta":b.numeroCuenta||"", "Cuenta contable": cuentaLabel(b.cuentaId),
+    "Saldo inicial":Math.round(b.saldoInicial||0), "Saldo actual":Math.round(saldoBanco(b, state)),
+  })));
+
+  const asiDetalle = [];
+  state.asi.forEach(a => a.detalle.forEach(l => asiDetalle.push({
+    Numero:a.numero, Fecha:a.fecha, Origen:a.origen, Referencia:a.referencia||"", Glosa:a.glosa,
+    Tipo:a.tipo==="automatico"?"Automatico":"Manual", Cuenta: cuentaLabel(l.cuentaId),
+    Debe: l.debe>0?Math.round(l.debe):"", Haber: l.haber>0?Math.round(l.haber):"",
+  })));
+  addSheet("Asientos contables", asiDetalle);
+
+  const efiRows = [];
+  const bloque = (titulo, tipo) => {
+    efiRows.push({Seccion:titulo, Cuenta:"", Monto:""});
+    const items = saldosPorTipo(tipo, state, state.asi);
+    let total = 0;
+    items.forEach(x => { efiRows.push({Seccion:"", Cuenta:`${x.cuenta.codigo} - ${x.cuenta.nombre}`, Monto:Math.round(x.saldo)}); total += x.saldo; });
+    efiRows.push({Seccion:`Total ${titulo.toLowerCase()}`, Cuenta:"", Monto:Math.round(total)});
+    efiRows.push({Seccion:"", Cuenta:"", Monto:""});
+    return total;
+  };
+  const totIngresos = bloque("Ingresos", "Ingreso");
+  const totCostos = bloque("Costo de ventas", "Costo");
+  efiRows.push({Seccion:"Utilidad bruta", Cuenta:"", Monto:Math.round(totIngresos-totCostos)});
+  efiRows.push({Seccion:"", Cuenta:"", Monto:""});
+  const totGastos = bloque("Gastos", "Gasto");
+  const utilidadNeta = totIngresos-totCostos-totGastos;
+  efiRows.push({Seccion:"Utilidad neta (historico completo)", Cuenta:"", Monto:Math.round(utilidadNeta)});
+  efiRows.push({Seccion:"", Cuenta:"", Monto:""});
+  const totActivo = bloque("Activo", "Activo");
+  const totPasivo = bloque("Pasivo", "Pasivo");
+  const totPatrimonioCuentas = bloque("Patrimonio", "Patrimonio");
+  efiRows.push({Seccion:"Utilidad del ejercicio", Cuenta:"", Monto:Math.round(utilidadNeta)});
+  efiRows.push({Seccion:"Total patrimonio", Cuenta:"", Monto:Math.round(totPatrimonioCuentas+utilidadNeta)});
+  efiRows.push({Seccion:"Total pasivo + patrimonio", Cuenta:"", Monto:Math.round(totPasivo+totPatrimonioCuentas+utilidadNeta)});
+  efiRows.push({Seccion:"Total activo", Cuenta:"", Monto:Math.round(totActivo)});
+  addSheet("Estados financieros", efiRows);
+
+  const fecha = todayISO();
+  XLSX.writeFile(wb, `ContaPyme_Respaldo_${fecha}.xlsx`);
 }
 
 // ---------------- arranque ----------------
